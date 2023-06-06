@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using System.Text;
 
 namespace FileCrypt
 {
@@ -36,10 +37,10 @@ namespace FileCrypt
             }
         }
 
-        public void EncryptFile(string filePath, byte[] key, byte[] salt)
+        public void EncryptTextFile(string filePath, byte[] key, byte[] salt)
         {
-            byte[] data = File.ReadAllBytes(filePath);
-            byte[] encryptedData = Encrypt(data, key, salt);
+            string plainText = File.ReadAllText(filePath, Encoding.UTF8);
+            byte[] encryptedData = Encrypt(Encoding.UTF8.GetBytes(plainText), key, salt);
             File.WriteAllBytes(filePath, encryptedData);
         }
     }
