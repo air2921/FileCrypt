@@ -36,21 +36,21 @@
                         return;
                     }
                     break;
-                case "ENCRYPT":
+                case "ENCRYPT TEXT":
                     Console.WriteLine("Укажите путь к файлу который вы хотите зашифровать :");
                     string EncryptFilePath = Console.ReadLine();
                     fileManager.CheckFile(EncryptFilePath);
                     byte[] EncryptKey = configurationFile.GetKeyValueFromConfigurationFile();
                     byte[] EncryptSalt = configurationFile.GetSaltValueFromConfigurationFile();
-                    encrypt.EncryptFile(EncryptFilePath, EncryptKey, EncryptSalt);
+                    encrypt.EncryptTextFile(EncryptFilePath, EncryptKey, EncryptSalt);
                     break;
-                case "DECRYPT":
+                case "DECRYPT TEXT":
                     Console.WriteLine("Укажите путь к файлу который вы хотите расшифровать :");
                     string DecryptedFilePath = Console.ReadLine();
                     fileManager.CheckFile(DecryptedFilePath);
                     byte[] DecryptKey = configurationFile.GetKeyValueFromConfigurationFile();
                     byte[] DecryptSalt = configurationFile.GetSaltValueFromConfigurationFile();
-                    decrypt.DecryptFile(DecryptedFilePath, DecryptKey, DecryptSalt);
+                    decrypt.DecryptTextFile(DecryptedFilePath, DecryptKey, DecryptSalt);
                     break;
                 default:
                     Console.WriteLine("Такой команды не существует, вы можете ввести '.help' для получения информации о применяемых командах");
