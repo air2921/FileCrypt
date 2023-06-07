@@ -28,16 +28,20 @@
             return filePath;
         }
 
-        internal void CheckDirectory (string directoryPath)
+        internal string CheckDirectory (string directoryPath)
         {
-            if(!Directory.Exists(directoryPath))
+            try
             {
-                throw new DirectoryNotFoundException($"Директории по такому пути не существует\n{directoryPath}");
+                if(Directory.Exists(directoryPath))
+                {
+                    return directoryPath;
+                }
             }
-            else
+            catch (DirectoryNotFoundException)
             {
-                return;
+                return ($"Директории по такому пути не существует\n{directoryPath}");
             }
+            return directoryPath;
         }
     }
 }

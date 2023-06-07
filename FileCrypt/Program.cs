@@ -4,9 +4,11 @@
     {
         static void Main(string[] args)
         {
-            var HelpedCommands = "GENERATE     Команда используется для создания Ключа и Соли шифрования\n" +
-                "ENCRYPT      Команда используется для начала процесса шифрования с использованием ключа и соли\n" +
-                "DECRYPT      Команда используется для начала процесса расшифрования с использованием ключа и соли";
+            var HelpedCommands = "\nGENERATE           Команда используется для создания Ключа и Соли шифрования\n\n" +
+                "FILE ENC           Команда используется для начала процесса шифрования отдельного файла\n\n" +
+                "FILE DEC           Команда используется для начала процесса расшифровывания отдельного файла\n\n" +
+                "DIRECTORY ENC      Команда используется для начала процесса шифрования всех файлов в указанной директории\n\n" +
+                "DIRECTORY DEC      Команда используется для начала процесса расшифровывания всех файлов в указанной директории";
 
             ConfigurationFile configurationFile = new ConfigurationFile();
             ISaveValuesToConfigurationFile saveValues = new ConfigurationFile();
@@ -39,7 +41,7 @@
                         return;
                     }
                     break;
-                case "ENCRYPT":
+                case "FILE ENC":
                     Console.WriteLine("Укажите путь к файлу который вы хотите зашифровать :");
                     string InputEncryptFilePath = Console.ReadLine();
 
@@ -57,7 +59,7 @@
                         encryptImage.EncryptImageFile(EncryptFileName, EncryptKey, EncryptSalt);
                     }
                     break;
-                case "DECRYPT":
+                case "FILE DEC":
                     Console.WriteLine("Укажите путь к файлу который вы хотите расшифровать :");
                     string InputDecryptedFilePath = Console.ReadLine();
 
@@ -73,6 +75,48 @@
                     else if(DecryptedFileName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || DecryptedFileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
                     {
                         decryptImage.DecryptImageFile(DecryptedFileName, DecryptKey, DecryptSalt);
+                    }
+                    break;
+                case "DIRECTORY ENC":
+                    Console.WriteLine("Укажите путь к директории в которой нужно зашифровать все файлы :");
+                    string InputEncryptDirectoryPath = Console.ReadLine();
+
+                    var EncryptDirectoryPath = fileManager.CheckDirectory(InputEncryptDirectoryPath);
+                    string[] EncryptFileNames = Directory.GetFiles(EncryptDirectoryPath);
+
+                    byte[] EncryptDirectoryKey = configurationFile.GetKeyValueFromConfigurationFile();
+                    byte[] EncryptDirectorySalt = configurationFile.GetSaltValueFromConfigurationFile();
+                    foreach (string fileName in EncryptFileNames)
+                    {
+                        if (fileName.Contains(".txt"))
+                        {
+                            encryptTxt.EncryptTxtFile(fileName, EncryptDirectoryKey, EncryptDirectorySalt);
+                        }
+                        else if (fileName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || fileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+                        {
+                            encryptImage.EncryptImageFile(fileName, EncryptDirectoryKey, EncryptDirectorySalt);
+                        }
+                    }
+                    break;
+                case "DIRECTORY DEC":
+                    Console.WriteLine("Укажите путь к директории в которой нужно расшифровать все файлы :");
+                    string InputDecryptDirectoryPath = Console.ReadLine();
+
+                    var DecryptDirectoryPath = fileManager.CheckDirectory(InputDecryptDirectoryPath);
+                    string[] DecryptFileNames = Directory.GetFiles(DecryptDirectoryPath);
+
+                    byte[] DecryptDirectoryKey = configurationFile.GetKeyValueFromConfigurationFile();
+                    byte[] DecryptDirectorySalt = configurationFile.GetSaltValueFromConfigurationFile();
+                    foreach (string fileName in DecryptFileNames)
+                    {
+                        if (fileName.Contains(".txt"))
+                        {
+                            decryptTxt.DecryptTxtFile(fileName, DecryptDirectoryKey, DecryptDirectorySalt);
+                        }
+                        else if (fileName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || fileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+                        {
+                            decryptImage.DecryptImageFile(fileName, DecryptDirectoryKey, DecryptDirectorySalt);
+                        }
                     }
                     break;
                 default:
