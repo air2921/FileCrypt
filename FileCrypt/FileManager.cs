@@ -2,16 +2,30 @@
 {
     internal class FileManager
     {
-        internal void CheckFile(string filePath)
+        internal string CheckFile(string filePath)
         {
-            if (!File.Exists(filePath))
+            try
             {
-                throw new FileNotFoundException($"Файла по такому пути не существует\n{filePath}");
+                string fullPath = Path.GetFullPath(filePath);
+                string fileName = Path.GetFileNameWithoutExtension(fullPath);
+                string fileExtension = Path.GetExtension(fullPath);
+
+                if (string.IsNullOrEmpty(fileExtension))
+                {
+                    // Если расширение файла не указано, пробуем определить его
+                    string[] matchingFiles = Directory.GetFiles(Path.GetDirectoryName(fullPath), fileName + ".*");
+                    if (matchingFiles.Length > 0)
+                    {
+                        filePath = matchingFiles[0];
+                    }
+                }
             }
-            else
+            catch (FileNotFoundException)
             {
-                return;
+                Console.WriteLine($"Файла по такому пути не существует\n{filePath}");
             }
+
+            return filePath;
         }
 
         internal void CheckDirectory (string directoryPath)

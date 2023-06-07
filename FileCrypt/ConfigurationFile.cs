@@ -14,7 +14,7 @@ namespace FileCrypt
             var encodedSalt = Convert.ToBase64String(Salt);
 
             // Создаем новый файл конфигурации
-            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
             // Добавляем ключ и значение в файл конфигурации
             config.AppSettings.Settings.Add("Key", encodedKey);
