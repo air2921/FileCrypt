@@ -38,7 +38,7 @@ namespace FileCrypt
             }
             catch (ArgumentNullException)
             {
-                Console.WriteLine("Не удалось найти ключ шифрования, рекомендуется выполнить команду GENERATE перед шифрования");
+                Console.WriteLine("Не удалось найти ключ шифрования, рекомендуется выполнить команду GENERATE перед шифрованием, или проверить файл конфигурации");
                 return null;
             }
         }
@@ -54,7 +54,7 @@ namespace FileCrypt
             }
             catch (ArgumentNullException)
             {
-                Console.WriteLine("Не удалось найти соль шифрования, рекомендуется выполнить команду GENERATE перед шифрования");
+                Console.WriteLine("Не удалось найти соль шифрования, рекомендуется выполнить команду GENERATE перед шифрованием, или проверить файл конфигурации");
                 return null;
             }
         }
