@@ -10,8 +10,10 @@
 
             ConfigurationFile configurationFile = new ConfigurationFile();
             ISaveValuesToConfigurationFile saveValues = new ConfigurationFile();
-            EncryptData encrypt = new EncryptData();
-            DecryptData decrypt = new DecryptData();
+            IEncryptorTxtFile encryptTxt = new EncryptData();
+            IDecryptorTxtFile decryptTxt = new DecryptData();
+            IEncryptorImageFile encryptImage = new EncryptData();
+            IDecryptorImageFile decryptImage = new DecryptData();
             FileManager fileManager = new FileManager();
             
 
@@ -21,6 +23,7 @@
             {
                 case ".help":
                     Console.WriteLine(HelpedCommands);
+                    Console.ReadKey();
                     break;
                 case "GENERATE":
                     Console.WriteLine("Если вы уже выполняли команду GENERATE, повторное выполнение команды может привести к нежелательным последствиям" +
@@ -36,24 +39,45 @@
                         return;
                     }
                     break;
-                case "ENCRYPT TEXT":
+                case "ENCRYPT":
                     Console.WriteLine("Укажите путь к файлу который вы хотите зашифровать :");
-                    string EncryptFilePath = Console.ReadLine();
-                    fileManager.CheckFile(EncryptFilePath);
+                    string InputEncryptFilePath = Console.ReadLine();
+
+                    //Пытаемся получить расширение файла
+                    var EncryptFileName = fileManager.CheckFile(InputEncryptFilePath);
+
                     byte[] EncryptKey = configurationFile.GetKeyValueFromConfigurationFile();
                     byte[] EncryptSalt = configurationFile.GetSaltValueFromConfigurationFile();
-                    encrypt.EncryptTextFile(EncryptFilePath, EncryptKey, EncryptSalt);
+                    if (EncryptFileName.Contains(".txt"))
+                    {
+                        encryptTxt.EncryptTxtFile(EncryptFileName, EncryptKey, EncryptSalt);
+                    }
+                    else if (EncryptFileName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || EncryptFileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+                    {
+                        encryptImage.EncryptImageFile(EncryptFileName, EncryptKey, EncryptSalt);
+                    }
                     break;
-                case "DECRYPT TEXT":
+                case "DECRYPT":
                     Console.WriteLine("Укажите путь к файлу который вы хотите расшифровать :");
-                    string DecryptedFilePath = Console.ReadLine();
-                    fileManager.CheckFile(DecryptedFilePath);
+                    string InputDecryptedFilePath = Console.ReadLine();
+
+                    //Пытаемся получить расширение файла
+                    var DecryptedFileName = fileManager.CheckFile(InputDecryptedFilePath);
+
                     byte[] DecryptKey = configurationFile.GetKeyValueFromConfigurationFile();
                     byte[] DecryptSalt = configurationFile.GetSaltValueFromConfigurationFile();
-                    decrypt.DecryptTextFile(DecryptedFilePath, DecryptKey, DecryptSalt);
+                    if (DecryptedFileName.Contains(".txt"))
+                    {
+                        decryptTxt.DecryptTxtFile(DecryptedFileName, DecryptKey, DecryptSalt);
+                    }
+                    else if(DecryptedFileName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || DecryptedFileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+                    {
+                        decryptImage.DecryptImageFile(DecryptedFileName, DecryptKey, DecryptSalt);
+                    }
                     break;
                 default:
                     Console.WriteLine("Такой команды не существует, вы можете ввести '.help' для получения информации о применяемых командах");
+                    Console.ReadKey();
                     break;
 
             }
