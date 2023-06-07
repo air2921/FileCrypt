@@ -14,21 +14,22 @@ namespace FileCrypt
                     aes.Key = rfc2898.GetBytes(aes.KeySize / 8);
 
                     aes.GenerateIV();
+                    byte[] iv = aes.IV;
 
                     using (ICryptoTransform encryptor = aes.CreateEncryptor())
                     using (MemoryStream memoryStream = new MemoryStream())
                     {
-                        memoryStream.Write(aes.IV, 0, aes.IV.Length);
+                        memoryStream.Write(iv, 0, iv.Length);
 
                         using (CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write))
                         {
                             cryptoStream.Write(data, 0, data.Length);
                             cryptoStream.FlushFinalBlock();
 
-                            byte[] combinedData = new byte[salt.Length + aes.IV.Length + memoryStream.Length];
+                            byte[] encryptedData = memoryStream.ToArray();
+                            byte[] combinedData = new byte[salt.Length + encryptedData.Length];
                             Buffer.BlockCopy(salt, 0, combinedData, 0, salt.Length);
-                            Buffer.BlockCopy(aes.IV, 0, combinedData, salt.Length, aes.IV.Length);
-                            Buffer.BlockCopy(memoryStream.GetBuffer(), 0, combinedData, salt.Length + aes.IV.Length, (int)memoryStream.Length);
+                            Buffer.BlockCopy(encryptedData, 0, combinedData, salt.Length, encryptedData.Length);
 
                             return combinedData;
                         }
@@ -47,36 +48,28 @@ namespace FileCrypt
                 }
 
                 aes.GenerateIV();
+                byte[] iv = aes.IV;
 
-                using (MemoryStream memoryStream = new MemoryStream(fileData))
+                using (MemoryStream encryptedStream = new MemoryStream())
                 {
-                    using (MemoryStream encryptedStream = new MemoryStream())
-                    {
-                        using (CryptoStream cryptoStream = new CryptoStream(encryptedStream, aes.CreateEncryptor(), CryptoStreamMode.Write))
-                        {
-                            memoryStream.CopyTo(cryptoStream);
-                            cryptoStream.FlushFinalBlock();
-                        }
+                    encryptedStream.Write(salt, 0, salt.Length);
+                    encryptedStream.Write(iv, 0, iv.Length);
 
-                        byte[] encryptedData = encryptedStream.ToArray();
-                        return encryptedData;
+                    using (CryptoStream cryptoStream = new CryptoStream(encryptedStream, aes.CreateEncryptor(), CryptoStreamMode.Write))
+                    {
+                        cryptoStream.Write(fileData, 0, fileData.Length);
+                        cryptoStream.FlushFinalBlock();
                     }
+
+                    byte[] encryptedData = encryptedStream.ToArray();
+                    return encryptedData;
                 }
             }
         }
 
         public void EncryptImageFile(string filePath, byte[] key, byte[] salt)
         {
-            byte[] imageData;
-            using (FileStream fs = new FileStream(filePath, FileMode.Open))
-            {
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    fs.CopyTo(memoryStream);
-                    imageData = memoryStream.ToArray();
-                }
-            }
-
+            byte[] imageData = File.ReadAllBytes(filePath);
             byte[] encryptedData = EncryptImage(imageData, key, salt);
 
             using (FileStream encryptedFileStream = new FileStream(filePath, FileMode.Create))
@@ -88,10 +81,12 @@ namespace FileCrypt
         public void EncryptTxtFile(string filePath, byte[] key, byte[] salt)
         {
             string plainText = File.ReadAllText(filePath, Encoding.UTF8);
-            byte[] encryptedData = EncryptText(Encoding.UTF8.GetBytes(plainText), key, salt);
+            byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+            byte[] encryptedData = EncryptText(plainTextBytes, key, salt);
             File.WriteAllBytes(filePath, encryptedData);
         }
     }
+
     public interface IEncryptorTxtFile
     {
         void EncryptTxtFile(string filePath, byte[] key, byte[] salt);

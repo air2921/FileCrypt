@@ -36,24 +36,22 @@ namespace FileCrypt
                 using (Rfc2898DeriveBytes rfc2898 = new Rfc2898DeriveBytes(key, salt, 10000))
                 {
                     aes.Key = rfc2898.GetBytes(aes.KeySize / 8);
+                }
 
-                    byte[] iv = new byte[aes.IV.Length];
-                    Buffer.BlockCopy(encryptedData, salt.Length, iv, 0, iv.Length);
-                    aes.IV = iv;
+                byte[] iv = new byte[aes.IV.Length];
+                Buffer.BlockCopy(encryptedData, salt.Length, iv, 0, iv.Length);
+                aes.IV = iv;
 
-                    using (MemoryStream encryptedStream = new MemoryStream(encryptedData, salt.Length + iv.Length, encryptedData.Length - salt.Length - iv.Length))
+                using (MemoryStream encryptedStream = new MemoryStream(encryptedData, salt.Length + iv.Length, encryptedData.Length - salt.Length - iv.Length))
+                using (MemoryStream decryptedStream = new MemoryStream())
+                {
+                    using (CryptoStream cryptoStream = new CryptoStream(encryptedStream, aes.CreateDecryptor(), CryptoStreamMode.Read))
                     {
-                        using (MemoryStream decryptedStream = new MemoryStream())
-                        {
-                            using (CryptoStream cryptoStream = new CryptoStream(encryptedStream, aes.CreateDecryptor(), CryptoStreamMode.Read))
-                            {
-                                cryptoStream.CopyTo(decryptedStream);
-                            }
-
-                            byte[] decryptedData = decryptedStream.ToArray();
-                            return decryptedData;
-                        }
+                        cryptoStream.CopyTo(decryptedStream);
                     }
+
+                    byte[] decryptedData = decryptedStream.ToArray();
+                    return decryptedData;
                 }
             }
         }
