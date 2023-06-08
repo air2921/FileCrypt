@@ -18,21 +18,25 @@
                     command.Generate();
 
                     break;
-                case "FILE ENC":
+                case "FENC":
                     command.EncryptFile();
 
                     break;
-                case "FILE DEC":
+                case "FDEC":
                     command.DecryptFile();
 
                     break;
-                case "DIRECTORY ENC":
+                case "DIRENC":
                     command.EncryptDirectory();
 
                     break;
-                case "DIRECTORY DEC":
+                case "DIRDEC":
                     command.DecryptDirectory();
 
+                    break;
+                case "EX":
+                    command.Example();
+                    
                     break;
                 default:
                     Console.WriteLine("Такой команды не существует, вы можете ввести '.help' для получения информации о применяемых командах");
