@@ -3,10 +3,8 @@
     internal class CommandHandler
     {
         ConfigurationFile configurationFile = new ConfigurationFile();
-        IEncryptorTxtFile encryptTxt = new EncryptData();
-        IDecryptorTxtFile decryptTxt = new DecryptData();
-        IEncryptorImageFile encryptImage = new EncryptData();
-        IDecryptorImageFile decryptImage = new DecryptData();
+        IEncryptor encrypt = new EncryptData();
+        IDecryptor decrypt = new DecryptData();
         ISaveValuesToConfigurationFile saveValues = new ConfigurationFile();
         FileManager fileManager = new FileManager();
 
@@ -33,14 +31,8 @@
 
             byte[] EncryptKey = configurationFile.GetKeyValueFromConfigurationFile();
             byte[] EncryptSalt = configurationFile.GetSaltValueFromConfigurationFile();
-            if (FileName.Contains(".txt"))
-            {
-                encryptTxt.EncryptTxtFile(FileName, EncryptKey, EncryptSalt);
-            }
-            else if (FileName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || FileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
-            {
-                encryptImage.EncryptImageFile(FileName, EncryptKey, EncryptSalt);
-            }
+
+            encrypt.EncryptFile(FileName, EncryptKey, EncryptSalt);
         }
 
         public void DecryptFile()
@@ -54,14 +46,8 @@
 
             byte[] DecryptKey = configurationFile.GetKeyValueFromConfigurationFile();
             byte[] DecryptSalt = configurationFile.GetSaltValueFromConfigurationFile();
-            if (FileName.Contains(".txt"))
-            {
-                decryptTxt.DecryptTxtFile(FileName, DecryptKey, DecryptSalt);
-            }
-            else if (FileName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || FileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
-            {
-                decryptImage.DecryptImageFile(FileName, DecryptKey, DecryptSalt);
-            }
+
+            decrypt.DecryptFile(FileName, DecryptKey, DecryptSalt);
         }
 
         public void EncryptDirectory()
@@ -77,14 +63,7 @@
             byte[] EncryptDirectorySalt = configurationFile.GetSaltValueFromConfigurationFile();
             foreach (string fileName in FileNames)
             {
-                if (fileName.Contains(".txt"))
-                {
-                    encryptTxt.EncryptTxtFile(fileName, EncryptDirectoryKey, EncryptDirectorySalt);
-                }
-                else if (fileName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || fileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
-                {
-                    encryptImage.EncryptImageFile(fileName, EncryptDirectoryKey, EncryptDirectorySalt);
-                }
+                encrypt.EncryptFile(fileName, EncryptDirectoryKey, EncryptDirectorySalt);
             }
         }
 
@@ -101,14 +80,7 @@
             byte[] DecryptDirectorySalt = configurationFile.GetSaltValueFromConfigurationFile();
             foreach (string fileName in FileNames)
             {
-                if (fileName.Contains(".txt"))
-                {
-                    decryptTxt.DecryptTxtFile(fileName, DecryptDirectoryKey, DecryptDirectorySalt);
-                }
-                else if (fileName.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || fileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
-                {
-                    decryptImage.DecryptImageFile(fileName, DecryptDirectoryKey, DecryptDirectorySalt);
-                }
+                decrypt.DecryptFile(fileName, DecryptDirectoryKey, DecryptDirectorySalt);
             }
         }
 
