@@ -29,34 +29,18 @@ namespace FileCrypt
 
         public byte[] GetKeyValueFromConfigurationFile()
         {
-            try
-            {
-                var ValueKey = ConfigurationManager.AppSettings["Key"];
-                byte[] KeyBytes = Convert.FromBase64String(ValueKey);
+            var ValueKey = ConfigurationManager.AppSettings["Key"];
+            byte[] KeyBytes = Convert.FromBase64String(ValueKey);
 
-                return KeyBytes;
-            }
-            catch (ArgumentNullException)
-            {
-                Console.WriteLine("Не удалось найти ключ шифрования.\nРекомендуется выполнить команду GENERATE перед шифрованием, или проверить файл конфигурации\n");
-                return null;
-            }
+            return KeyBytes;
         }
 
         public byte[] GetSaltValueFromConfigurationFile()
         {
-            try
-            {
-                var ValueSalt = ConfigurationManager.AppSettings["Salt"];
-                byte[] SaltBytes = Convert.FromBase64String(ValueSalt);
+            var ValueSalt = ConfigurationManager.AppSettings["Salt"];
+            byte[] SaltBytes = Convert.FromBase64String(ValueSalt);
 
-                return SaltBytes;
-            }
-            catch (ArgumentNullException)
-            {
-                Console.WriteLine("Не удалось найти соль шифрования\nРекомендуется выполнить команду GENERATE перед шифрованием, или проверить файл конфигурации");
-                return null;
-            }
+            return SaltBytes;
         }
     }
 
