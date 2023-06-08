@@ -4,7 +4,7 @@
     {
         internal string CheckFile(string filePath)
         {
-            try
+            if(File.Exists(filePath))
             {
                 string fullPath = Path.GetFullPath(filePath);
                 string fileName = Path.GetFileNameWithoutExtension(fullPath);
@@ -19,29 +19,28 @@
                         filePath = matchingFiles[0];
                     }
                 }
+                return filePath;
             }
-            catch (FileNotFoundException)
+            else
             {
-                Console.WriteLine($"Файла по такому пути не существует\n{filePath}");
+                Console.WriteLine($"\nФайла по такому пути не существует     '{filePath}'");
+                Environment.Exit(1); // Выход из программы с кодом ошибки
+                return null;
             }
-
-            return filePath;
         }
 
         internal string CheckDirectory (string directoryPath)
         {
-            try
+            if (Directory.Exists(directoryPath))
             {
-                if(Directory.Exists(directoryPath))
-                {
-                    return directoryPath;
-                }
+                return directoryPath;
             }
-            catch (DirectoryNotFoundException)
+            else
             {
-                return ($"Директории по такому пути не существует\n{directoryPath}");
+                Console.WriteLine($"\nДиректории по такому пути не существует     '{directoryPath}'");
+                Environment.Exit(1);
+                return null;
             }
-            return directoryPath;
         }
     }
 }
