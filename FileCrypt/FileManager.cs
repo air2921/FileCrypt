@@ -4,21 +4,22 @@
     {
         internal string CheckFile(string filePath)
         {
-            if(File.Exists(filePath))
-            {
-                string fullPath = Path.GetFullPath(filePath);
-                string fileName = Path.GetFileNameWithoutExtension(fullPath);
-                string fileExtension = Path.GetExtension(fullPath);
+            string fullPath = Path.GetFullPath(filePath);
+            string fileName = Path.GetFileNameWithoutExtension(fullPath);
+            string fileExtension = Path.GetExtension(fullPath);
 
-                if (string.IsNullOrEmpty(fileExtension))
+            if (string.IsNullOrEmpty(fileExtension))
+            {
+                // Если расширение файла не указано, пробуем определить его
+                string[] matchingFiles = Directory.GetFiles(Path.GetDirectoryName(fullPath), fileName + ".*");
+                if (matchingFiles.Length > 0)
                 {
-                    // Если расширение файла не указано, пробуем определить его
-                    string[] matchingFiles = Directory.GetFiles(Path.GetDirectoryName(fullPath), fileName + ".*");
-                    if (matchingFiles.Length > 0)
-                    {
-                        filePath = matchingFiles[0];
-                    }
+                    filePath = matchingFiles[0];
                 }
+            }
+
+            if (File.Exists(filePath))
+            {
                 return filePath;
             }
             else
