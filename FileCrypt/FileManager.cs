@@ -25,7 +25,7 @@
             else
             {
                 Console.WriteLine($"\nФайла по такому пути не существует     '{filePath}'");
-                Environment.Exit(1); // Выход из программы с кодом ошибки
+                Environment.Exit(1);
                 return null;
             }
         }
