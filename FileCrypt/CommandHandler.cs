@@ -2,11 +2,11 @@
 {
     internal class CommandHandler : ICommands
     {
-        IEncryptor encrypt = new EncryptData();
-        IDecryptor decrypt = new DecryptData();
-        ISaveValuesToConfigurationFile saveValues = new ConfigurationFile();
+        readonly IEncryptor encrypt = new EncryptData();
+        readonly IDecryptor decrypt = new DecryptData();
+        readonly ISaveValuesToConfigurationFile saveValues = new ConfigurationFile();
         readonly IGetValueFromConfigurationFile getValue = new ConfigurationFile();
-        FileManager fileManager = new FileManager();
+        readonly FileManager fileManager = new FileManager();
 
         public void Help()
         {
