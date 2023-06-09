@@ -2,7 +2,7 @@
 
 namespace FileCrypt
 {
-    internal class ConfigurationFile : ISaveValuesToConfigurationFile
+    internal class ConfigurationFile : ISaveValuesToConfigurationFile, IGetValueFromConfigurationFile
     {
         public void SaveValuesToConfigurationFile()
         {
@@ -13,17 +13,12 @@ namespace FileCrypt
             var encodedKey = Convert.ToBase64String(Key);
             var encodedSalt = Convert.ToBase64String(Salt);
 
-            // Создаем новый файл конфигурации
-            System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
-            // Добавляем ключ и значение в файл конфигурации
             config.AppSettings.Settings.Add("Key", encodedKey);
             config.AppSettings.Settings.Add("Salt", encodedSalt);
 
-            // Сохранение файла конфигурации
             config.Save(ConfigurationSaveMode.Modified);
-
-            // Перезагрузка конфигурации
             ConfigurationManager.RefreshSection("appSettings");
         }
 
@@ -35,8 +30,8 @@ namespace FileCrypt
             {
                 Console.WriteLine("\nКлюч не был найден.\nРекомендуется произвести команду GENERATE, для создания ключа и соли\n" +
                     "Если вы уверены что вы уже генерировали ключ и соль, проверьте файл конфигурации.\n" +
-                    "Если в файле конфигурации отсутсвует ключ, вставьте ранее сгенерированный ключ в поле Key");
-                Environment.Exit(1); // Выход из программы с кодом ошибки
+                    "Если в файле конфигурации отсутствует ключ, вставьте ранее сгенерированный ключ в поле Key");
+                Environment.Exit(1);
             }
 
             byte[] KeyBytes = Convert.FromBase64String(ValueKey);
@@ -52,7 +47,7 @@ namespace FileCrypt
             {
                 Console.WriteLine("\nСоль не была найдена.\nРекомендуется произвести команду GENERATE, для создания ключа и соли\n" +
                     "Если вы уверены что вы уже генерировали ключ и соль, проверьте файл конфигурации.\n" +
-                    "Если в файле конфигурации отсутсвует соль, вставьте ранее сгенерированную соль в поле Salt");
+                    "Если в файле конфигурации отсутствует соль, вставьте ранее сгенерированную соль в поле Salt");
             }
 
             byte[] SaltBytes = Convert.FromBase64String(ValueSalt);
@@ -64,5 +59,11 @@ namespace FileCrypt
     public interface ISaveValuesToConfigurationFile
     {
         void SaveValuesToConfigurationFile();
+    }
+
+    public interface IGetValueFromConfigurationFile
+    {
+        byte[] GetKeyValueFromConfigurationFile();
+        byte[] GetSaltValueFromConfigurationFile();
     }
 }
