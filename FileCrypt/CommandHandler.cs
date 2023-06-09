@@ -1,16 +1,17 @@
 ﻿namespace FileCrypt
 {
-    internal class CommandHandler
+    internal class CommandHandler : ICommands
     {
-        ConfigurationFile configurationFile = new ConfigurationFile();
         IEncryptor encrypt = new EncryptData();
         IDecryptor decrypt = new DecryptData();
         ISaveValuesToConfigurationFile saveValues = new ConfigurationFile();
+        readonly IGetValueFromConfigurationFile getValue = new ConfigurationFile();
         FileManager fileManager = new FileManager();
 
         public void Help()
         {
-            var HelpedCommands = "\nGENERATE           Команда используется для создания Ключа и Соли шифрования\n\n" +
+            var HelpedCommands = 
+            "\nGENERATE           Команда используется для создания Ключа и Соли шифрования\n\n" +
             "FENC               Команда используется для начала процесса шифрования отдельного файла\n\n" +
             "FDEC               Команда используется для начала процесса расшифровывания отдельного файла\n\n" +
             "DIRENC             Команда используется для начала процесса шифрования всех файлов в указанной директории\n\n" +
@@ -27,11 +28,10 @@
 
             string FilePath = Console.ReadLine();
 
-            //Пытаемся получить расширение файла
             var FileName = fileManager.CheckFile(FilePath);
 
-            byte[] EncryptKey = configurationFile.GetKeyValueFromConfigurationFile();
-            byte[] EncryptSalt = configurationFile.GetSaltValueFromConfigurationFile();
+            byte[] EncryptKey = getValue.GetKeyValueFromConfigurationFile();
+            byte[] EncryptSalt = getValue.GetSaltValueFromConfigurationFile();
 
             encrypt.EncryptFile(FileName, EncryptKey, EncryptSalt);
         }
@@ -42,11 +42,10 @@
 
             string FilePath = Console.ReadLine();
 
-            //Пытаемся получить расширение файла
             var FileName = fileManager.CheckFile(FilePath);
 
-            byte[] DecryptKey = configurationFile.GetKeyValueFromConfigurationFile();
-            byte[] DecryptSalt = configurationFile.GetSaltValueFromConfigurationFile();
+            byte[] DecryptKey = getValue.GetKeyValueFromConfigurationFile();
+            byte[] DecryptSalt = getValue.GetSaltValueFromConfigurationFile();
 
             decrypt.DecryptFile(FileName, DecryptKey, DecryptSalt);
         }
@@ -60,8 +59,8 @@
             var DirectoryName = fileManager.CheckDirectory(DirectoryPath);
             string[] FileNames = Directory.GetFiles(DirectoryName);
 
-            byte[] EncryptDirectoryKey = configurationFile.GetKeyValueFromConfigurationFile();
-            byte[] EncryptDirectorySalt = configurationFile.GetSaltValueFromConfigurationFile();
+            byte[] EncryptDirectoryKey = getValue.GetKeyValueFromConfigurationFile();
+            byte[] EncryptDirectorySalt = getValue.GetSaltValueFromConfigurationFile();
             foreach (string fileName in FileNames)
             {
                 encrypt.EncryptFile(fileName, EncryptDirectoryKey, EncryptDirectorySalt);
@@ -77,8 +76,8 @@
             var DirectoryName = fileManager.CheckDirectory(DirectoryPath);
             string[] FileNames = Directory.GetFiles(DirectoryName);
 
-            byte[] DecryptDirectoryKey = configurationFile.GetKeyValueFromConfigurationFile();
-            byte[] DecryptDirectorySalt = configurationFile.GetSaltValueFromConfigurationFile();
+            byte[] DecryptDirectoryKey = getValue.GetKeyValueFromConfigurationFile();
+            byte[] DecryptDirectorySalt = getValue.GetSaltValueFromConfigurationFile();
             foreach (string fileName in FileNames)
             {
                 decrypt.DecryptFile(fileName, DecryptDirectoryKey, DecryptDirectorySalt);
@@ -91,12 +90,12 @@
             "\n Введите 'OK' если вы еще не создавали ключ шифрования." +
             "\n Введите 'STOP' если вы уже создавали ключ шифрования.\n");
 
-            var InputCheck = Console.ReadLine();
-            if (InputCheck == "OK")
+            var Check = Console.ReadLine();
+            if (Check == "OK")
             {
                 saveValues.SaveValuesToConfigurationFile();
             }
-            else if (InputCheck == "STOP")
+            else if (Check == "STOP")
             {
                 return;
             }
@@ -109,7 +108,7 @@
                 "Пример пути к папке с документами            C:/Users/Имя пользователя/Documents/Название папки с документами\n\n" +
                 "Пример пути к папке с видео                  C:/Users/Имя пользователя/Videos/Название вашей папки с видео\n\n" +
                 "Пример пути к папке находящейся диске        C:/Название вашей папки/Название папки в папке [(При наличии)]\n\n" +
-                "Пример пути к файлу                          С/Название вашей папки/VashFile [(Расширение файла указывать не нужно)]\n");
+                "Пример пути к файлу                          С/Название вашей папки/Название файла [(Расширение файла указывать не нужно)]\n");
             Console.ReadKey();
         }
     }
