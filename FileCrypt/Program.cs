@@ -4,7 +4,7 @@
     {
         static void Main(string[] args)
         {
-            CommandHandler command = new CommandHandler();
+            ICommands command = new CommandHandler();
 
             Console.WriteLine("Введите команду которую хотите выполнить");
             string InputUser = Console.ReadLine();
