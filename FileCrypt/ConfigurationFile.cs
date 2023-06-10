@@ -1,4 +1,6 @@
 ﻿using System.Configuration;
+using System.Security.AccessControl;
+using System.Security.Principal;
 
 namespace FileCrypt
 {
@@ -24,35 +26,82 @@ namespace FileCrypt
 
         public byte[] GetKeyValueFromConfigurationFile()
         {
-            var ValueKey = ConfigurationManager.AppSettings["Key"];
+            WindowsIdentity currentIdentity = WindowsIdentity.GetCurrent();
+            WindowsPrincipal currentPrincipal = new WindowsPrincipal(currentIdentity);
+            SetAdminOnlyAccess(GetConfigurationFilePath());
 
-            if (ValueKey == null)
+            try
             {
-                Console.WriteLine("\nКлюч не был найден.\nРекомендуется произвести команду GENERATE, для создания ключа и соли\n" +
-                    "Если вы уверены что вы уже генерировали ключ и соль, проверьте файл конфигурации.\n" +
-                    "Если в файле конфигурации отсутствует ключ, вставьте ранее сгенерированный ключ в поле Key");
-                Environment.Exit(1);
+                var ValueKey = ConfigurationManager.AppSettings["Key"];
+
+                if (ValueKey == null)
+                {
+                    Console.WriteLine("\nКлюч не был найден.\nРекомендуется произвести команду GENERATE, для создания ключа и соли\n" +
+                        "Если вы уверены что вы уже генерировали ключ и соль, проверьте файл конфигурации.\n" +
+                        "Если в файле конфигурации отсутствует ключ, вставьте ранее сгенерированный ключ в поле Key");
+                    Environment.Exit(1);
+                }
+
+                byte[] KeyBytes = Convert.FromBase64String(ValueKey);
+
+                return KeyBytes;
             }
-
-            byte[] KeyBytes = Convert.FromBase64String(ValueKey);
-
-            return KeyBytes;
+            catch (PrivilegeNotHeldException)
+            {
+                Console.WriteLine("У вас нет достаточных привилегий для выполнения этой операции.");
+                Console.ReadKey();
+                Environment.Exit(1);
+                return null;
+            }
         }
 
         public byte[] GetSaltValueFromConfigurationFile()
         {
-            var ValueSalt = ConfigurationManager.AppSettings["Salt"];
+            SetAdminOnlyAccess(GetConfigurationFilePath());
 
-            if(ValueSalt == null)
+            try
             {
-                Console.WriteLine("\nСоль не была найдена.\nРекомендуется произвести команду GENERATE, для создания ключа и соли\n" +
-                    "Если вы уверены что вы уже генерировали ключ и соль, проверьте файл конфигурации.\n" +
-                    "Если в файле конфигурации отсутствует соль, вставьте ранее сгенерированную соль в поле Salt");
+                var ValueSalt = ConfigurationManager.AppSettings["Salt"];
+
+                if (ValueSalt == null)
+                {
+                    Console.WriteLine("\nСоль не была найдена.\nРекомендуется произвести команду GENERATE, для создания ключа и соли\n" +
+                        "Если вы уверены что вы уже генерировали ключ и соль, проверьте файл конфигурации.\n" +
+                        "Если в файле конфигурации отсутствует соль, вставьте ранее сгенерированную соль в поле Salt");
+                }
+
+                byte[] SaltBytes = Convert.FromBase64String(ValueSalt);
+
+                return SaltBytes;
             }
+            catch (PrivilegeNotHeldException)
+            {
+                Console.WriteLine("У вас нет достаточных привилегий для выполнения этой операции.");
+                Console.ReadKey();
+                Environment.Exit(1);
+                return null;
+            }
+        }
 
-            byte[] SaltBytes = Convert.FromBase64String(ValueSalt);
+        private static void SetAdminOnlyAccess(string filePath)
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+            FileSecurity fileSecurity = new FileSecurity(filePath, AccessControlSections.All);
 
-            return SaltBytes;
+            SecurityIdentifier adminSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
+
+            FileSystemAccessRule adminAccessRule = new FileSystemAccessRule(adminSid, FileSystemRights.FullControl, AccessControlType.Allow);
+
+            fileSecurity.AddAccessRule(adminAccessRule);
+
+            fileInfo.SetAccessControl(fileSecurity);
+        }
+
+        private static string GetConfigurationFilePath()
+        {
+            string appPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            var DirectoryPath = Path.GetDirectoryName(appPath);
+            return DirectoryPath + "\\FileCrypt.dll.config";
         }
     }
 
