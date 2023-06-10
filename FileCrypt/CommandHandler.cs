@@ -37,6 +37,7 @@
             byte[] EncryptSalt = getValue.GetSaltValueFromConfigurationFile();
 
             encrypt.EncryptFile(FileName, EncryptKey, EncryptSalt);
+            Console.ReadKey();
         }
 
         public void DecryptFile()
@@ -51,6 +52,7 @@
             byte[] DecryptSalt = getValue.GetSaltValueFromConfigurationFile();
 
             decrypt.DecryptFile(FileName, DecryptKey, DecryptSalt);
+            Console.ReadKey();
         }
 
         public void EncryptDirectory()
@@ -90,6 +92,7 @@
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("\nВ директории не найдено файлов для шифрования или произошла ошибка при шифровании.");
             }
+            Console.ReadKey();
         }
 
         public void DecryptDirectory()
@@ -129,6 +132,7 @@
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("\nВ директории не найдено файлов для расшифровки или произошла ошибка при расшифровке.");
             }
+            Console.ReadKey();
         }
 
         public void Generate()
@@ -146,6 +150,7 @@
             {
                 return;
             }
+            Console.ReadKey();
         }
 
         public void Example()
@@ -167,6 +172,7 @@
             var backupDirectoryName = $"{directoryName}(Reserve)";
             var backupDirectory = Path.Combine("C:/directories backup", backupDirectoryName);
             directoryOperations.CreateBackup(sourceDirectory, backupDirectory);
+            Console.ReadKey();
         }
 
         public void DeleteDirectory()
@@ -175,6 +181,7 @@
             var directoryPath = Console.ReadLine();
             var directoryName = fileManager.CheckDirectory(directoryPath);
             directoryOperations.DeleteDirectory(directoryName);
+            Console.ReadKey();
         }
     }
 }
