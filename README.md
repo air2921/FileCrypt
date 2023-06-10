@@ -12,4 +12,4 @@
 
 Имеет проблемы с расшифровкой звуковых файлов, таких как (.ogg).
 
-[Вот так выглядят файлы до шифрования](https://github.com/air2921/FileCrypt/blob/master/Screenshot_1.png)
+[](https://github.com/air2921/FileCrypt/blob/master/Screenshot_1.png)
