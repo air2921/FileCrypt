@@ -44,6 +44,7 @@ namespace FileCrypt
                     decryptedStream.CopyTo(fs);
                 }
             }
+            Console.WriteLine($"Файл {filePath} был успешно расшифрован.");
         }
     }
 

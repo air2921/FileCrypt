@@ -43,6 +43,7 @@ namespace FileCrypt
             {
                 encryptedFileStream.Write(encryptedData, 0, encryptedData.Length);
             }
+            Console.WriteLine($"Файл {filePath} был успешно зашифрован.");
         }
     }
 
