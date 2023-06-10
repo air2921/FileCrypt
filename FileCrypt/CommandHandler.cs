@@ -19,7 +19,8 @@
             "DIRDEC             Команда используется для начала процесса расшифровывания всех файлов в указанной директории\n\n" +
             "DIRBACKUP          Команда используется для создания резервной копии выбранной директории\n\n" +
             "DIRDEL             Команда используется для насильного удаления директории\n\n" +
-            "EX                 Команда для получения примера правильного ввода пути";
+            "EX                 Команда для получения примера правильного ввода пути" +
+            "\n\n\nЕсли программа закрывается при попытке шифрования или расшифровки, попробуйте запустить утилиту от имени Администратора!";
 
             Console.WriteLine(HelpedCommands);
             Console.ReadKey();
@@ -71,8 +72,8 @@
             {
                 try
                 {
-                    encrypt.EncryptFile(fileName, encryptDirectoryKey, encryptDirectorySalt);
                     Console.ForegroundColor = ConsoleColor.Green;
+                    encrypt.EncryptFile(fileName, encryptDirectoryKey, encryptDirectorySalt);
                     anyFileEncrypted = true;
                 }
                 catch (Exception ex)
@@ -111,8 +112,8 @@
             {
                 try
                 {
-                    decrypt.DecryptFile(fileName, decryptDirectoryKey, decryptDirectorySalt);
                     Console.ForegroundColor = ConsoleColor.Green;
+                    decrypt.DecryptFile(fileName, decryptDirectoryKey, decryptDirectorySalt);
                     anyFileDecrypted = true;
                 }
                 catch (Exception ex)
@@ -145,12 +146,19 @@
             if (Check == "OK")
             {
                 saveValues.SaveValuesToConfigurationFile();
+                Console.ForegroundColor= ConsoleColor.Green;
+                Console.WriteLine("\nЗначения установлены и могут быть использованы.");
             }
             else if (Check == "STOP")
             {
                 return;
             }
-            Console.ReadKey();
+            else
+            {
+                Console.ForegroundColor= ConsoleColor.Red;
+                Console.WriteLine("\nТакой команды не предоставляется");
+                return;
+            }
         }
 
         public void Example()

@@ -47,7 +47,9 @@
                     
                     break;
                 default:
-                    Console.WriteLine("Такой команды не существует, вы можете ввести '.help' для получения информации о применяемых командах");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Такой команды не существует.\nВы можете ввести '.help' для получения информации о применяемых командах" +
+                        " и возможных ошибках");
                     Console.ReadKey();
                     break;
 
