@@ -11,8 +11,8 @@ namespace FileCrypt
                 Process process = new Process();
                 process.StartInfo.FileName = "cmd.exe";
                 process.StartInfo.Arguments = $"/c rd /s /q \"{directoryPath}\"";
-                process.StartInfo.CreateNoWindow = true;
-                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                process.StartInfo.CreateNoWindow = false;
+                process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
                 process.Start();
                 process.WaitForExit();
                 Console.WriteLine($"Директория {directoryPath} успешно удалена.");
