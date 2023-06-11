@@ -26,12 +26,10 @@ namespace FileCrypt
 
         public byte[] GetKeyValueFromConfigurationFile()
         {
-            WindowsIdentity currentIdentity = WindowsIdentity.GetCurrent();
-            WindowsPrincipal currentPrincipal = new WindowsPrincipal(currentIdentity);
-            SetAdminOnlyAccess(GetConfigurationFilePath());
-
             try
             {
+                SetAdminOnlyAccess(GetConfigurationFilePath());
+
                 var ValueKey = ConfigurationManager.AppSettings["Key"];
 
                 if (ValueKey == null)
@@ -57,10 +55,10 @@ namespace FileCrypt
 
         public byte[] GetSaltValueFromConfigurationFile()
         {
-            SetAdminOnlyAccess(GetConfigurationFilePath());
-
             try
             {
+                SetAdminOnlyAccess(GetConfigurationFilePath());
+
                 var ValueSalt = ConfigurationManager.AppSettings["Salt"];
 
                 if (ValueSalt == null)
