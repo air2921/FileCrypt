@@ -82,18 +82,19 @@
 
             var directoryName = fileManager.CheckDirectory(DirectoryPath);
             string[] fileNames = Directory.GetFiles(directoryName, "*", SearchOption.AllDirectories);
+            var totalFiles = fileNames.Length;
+            var allFiles = 0;
 
             byte[] key = Key;
             byte[] salt = Salt;
 
-            bool anyFileEncrypted = false;
             foreach (string fileName in fileNames)
             {
                 try
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     encrypt.EncryptFile(fileName, key, salt);
-                    anyFileEncrypted = true;
+                    allFiles++;
                     Console.ResetColor();
                 }
                 catch (Exception ex)
@@ -104,16 +105,22 @@
                 }
             }
 
-            if (anyFileEncrypted)
+            if (allFiles == totalFiles && totalFiles > 0)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("\nФайлы в директории были успешно зашифрованы.");
+                Console.WriteLine("\nВсе файлы в директории были успешно зашифрованы.");
+                Console.ResetColor();
+            }
+            else if (allFiles == 0 && totalFiles == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\nВ директории не найдено файлов для шифрования или произошла ошибка при шифровании.");
                 Console.ResetColor();
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("\nВ директории не найдено файлов для шифрования или произошла ошибка при шифровании.");
+                Console.WriteLine("\nНе все файлы из директории удалось зашифровать");
                 Console.ResetColor();
             }
             Console.ReadKey();
@@ -127,18 +134,19 @@
 
             var directoryName = fileManager.CheckDirectory(DirectoryPath);
             string[] fileNames = Directory.GetFiles(directoryName, "*", SearchOption.AllDirectories);
+            var totalFiles = fileNames.Length;
+            var allFiles = 0;
 
             byte[] key = Key;
             byte[] salt = Salt;
 
-            bool anyFileDecrypted = false;
             foreach (string fileName in fileNames)
             {
                 try
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     decrypt.DecryptFile(fileName, key, salt);
-                    anyFileDecrypted = true;
+                    allFiles++;
                     Console.ResetColor();
                 }
                 catch (Exception ex)
@@ -149,16 +157,22 @@
                 }
             }
 
-            if (anyFileDecrypted)
+            if (allFiles == totalFiles && totalFiles > 0)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("\nФайлы в директории были успешно расшифрованы.");
+                Console.WriteLine("\nВсе файлы в директории были успешно расшифрованы.");
+                Console.ResetColor();
+            }
+            else if (allFiles == 0 && totalFiles == 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\nВ директории не найдено файлов для расшифровки или произошла ошибка при расшифровке.");
                 Console.ResetColor();
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("\nВ директории не найдено файлов для расшифровки или произошла ошибка при расшифровке.");
+                Console.WriteLine("\nНе все файлы из директории удалось расшифровать");
                 Console.ResetColor();
             }
             Console.ReadKey();
