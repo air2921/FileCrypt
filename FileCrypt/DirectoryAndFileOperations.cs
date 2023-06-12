@@ -17,7 +17,7 @@ namespace FileCrypt
                 process.WaitForExit();
                 Console.WriteLine($"Директория {directoryPath} успешно удалена.");
             }
-            catch (UnauthorizedAccessException ex)
+            catch (UnauthorizedAccessException)
             {
                 Console.WriteLine($"Ошибка удаления директории {directoryPath}: отсутствуют необходимые разрешения доступа.");
             }
