@@ -36,7 +36,7 @@
             "DIRENC             Команда используется для начала процесса шифрования всех файлов в указанной директории\n\n" +
             "DIRDEC             Команда используется для начала процесса расшифровывания всех файлов в указанной директории\n\n" +
             "DIRBACKUP          Команда используется для создания резервной копии выбранной директории\n\n" +
-            "DIRDEL             Команда используется для насильного удаления директории\n\n" +
+            "DIRDEL             Команда используется для принудительного удаления директории\n\n" +
             "EX                 Команда для получения примера правильного ввода пути" +
             "\n\n\nЕсли программа закрывается при попытке шифрования или расшифровки, попробуйте запустить утилиту от имени Администратора!";
 
@@ -94,11 +94,13 @@
                     Console.ForegroundColor = ConsoleColor.Green;
                     encrypt.EncryptFile(fileName, key, salt);
                     anyFileEncrypted = true;
+                    Console.ResetColor();
                 }
                 catch (Exception ex)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"Ошибка при шифровании файла {fileName}: {ex.Message}");
+                    Console.ResetColor();
                 }
             }
 
@@ -106,11 +108,13 @@
             {
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("\nФайлы в директории были успешно зашифрованы.");
+                Console.ResetColor();
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("\nВ директории не найдено файлов для шифрования или произошла ошибка при шифровании.");
+                Console.ResetColor();
             }
             Console.ReadKey();
         }
@@ -127,8 +131,6 @@
             byte[] key = Key;
             byte[] salt = Salt;
 
-            byte[] decryptDirectoryKey = getValue.GetKeyValueFromConfigurationFile();
-            byte[] decryptDirectorySalt = getValue.GetSaltValueFromConfigurationFile();
             bool anyFileDecrypted = false;
             foreach (string fileName in fileNames)
             {
@@ -137,11 +139,13 @@
                     Console.ForegroundColor = ConsoleColor.Green;
                     decrypt.DecryptFile(fileName, key, salt);
                     anyFileDecrypted = true;
+                    Console.ResetColor();
                 }
                 catch (Exception ex)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"Ошибка при расшифровке файла {fileName}: {ex.Message}");
+                    Console.ResetColor();
                 }
             }
 
@@ -149,11 +153,13 @@
             {
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("\nФайлы в директории были успешно расшифрованы.");
+                Console.ResetColor();
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("\nВ директории не найдено файлов для расшифровки или произошла ошибка при расшифровке.");
+                Console.ResetColor();
             }
             Console.ReadKey();
         }
