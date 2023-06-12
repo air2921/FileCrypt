@@ -32,13 +32,14 @@ namespace FileCrypt
 
                 var ValueKey = ConfigurationManager.AppSettings["Key"];
 
-                if (ValueKey == null)
+                if (String.IsNullOrWhiteSpace(ValueKey))
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
-                    Console.WriteLine("\nКлюч не был найден.\nРекомендуется произвести команду GENERATE, для создания ключа и соли\n" +
-                        "Если вы уверены что вы уже генерировали ключ и соль, проверьте файл конфигурации.\n" +
-                        "Если в файле конфигурации отсутствует ключ, вставьте ранее сгенерированный ключ в поле Key");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("\nКлюч не был найден." +
+                        "\nЕсли вы уверены что вы уже генерировали ключ и соль, проверьте файл конфигурации." +
+                        "\nЕсли в файле конфигурации отсутствует ключ, вставьте ранее сгенерированный ключ в поле Key");
                     Environment.Exit(1);
+                    Console.ReadKey();
                 }
 
                 byte[] KeyBytes = Convert.FromBase64String(ValueKey);
@@ -63,12 +64,14 @@ namespace FileCrypt
 
                 var ValueSalt = ConfigurationManager.AppSettings["Salt"];
 
-                if (ValueSalt == null)
+                if (String.IsNullOrWhiteSpace(ValueSalt))
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
-                    Console.WriteLine("\nСоль не была найдена.\nРекомендуется произвести команду GENERATE, для создания ключа и соли\n" +
-                        "Если вы уверены что вы уже генерировали ключ и соль, проверьте файл конфигурации.\n" +
-                        "Если в файле конфигурации отсутствует соль, вставьте ранее сгенерированную соль в поле Salt");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("\nСоль не была найдена." +
+                        "\nЕсли вы уверены что вы уже генерировали ключ и соль, проверьте файл конфигурации." +
+                        "\nЕсли в файле конфигурации отсутствует соль, вставьте ранее сгенерированную соль в поле Salt");
+                    Environment.Exit(1);
+                    Console.ReadKey();
                 }
 
                 byte[] SaltBytes = Convert.FromBase64String(ValueSalt);
@@ -92,16 +95,16 @@ namespace FileCrypt
 #pragma warning disable CA1416 // Проверка совместимости платформы
             try
             {
-            FileSecurity fileSecurity = new FileSecurity(filePath, AccessControlSections.All);
+                FileSecurity fileSecurity = new FileSecurity(filePath, AccessControlSections.All);
 
-            SecurityIdentifier adminSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
+                SecurityIdentifier adminSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
 
-            FileSystemAccessRule adminAccessRule = new FileSystemAccessRule(adminSid, FileSystemRights.FullControl, AccessControlType.Allow);
+                FileSystemAccessRule adminAccessRule = new FileSystemAccessRule(adminSid, FileSystemRights.FullControl, AccessControlType.Allow);
 
-            fileSecurity.AddAccessRule(adminAccessRule);
+                fileSecurity.AddAccessRule(adminAccessRule);
 
-            fileInfo.SetAccessControl(fileSecurity);
-        }
+                fileInfo.SetAccessControl(fileSecurity);
+            }
             catch (FileNotFoundException)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
