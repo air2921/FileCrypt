@@ -34,6 +34,7 @@ namespace FileCrypt
 
                 if (ValueKey == null)
                 {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
                     Console.WriteLine("\nКлюч не был найден.\nРекомендуется произвести команду GENERATE, для создания ключа и соли\n" +
                         "Если вы уверены что вы уже генерировали ключ и соль, проверьте файл конфигурации.\n" +
                         "Если в файле конфигурации отсутствует ключ, вставьте ранее сгенерированный ключ в поле Key");
@@ -46,7 +47,8 @@ namespace FileCrypt
             }
             catch (PrivilegeNotHeldException)
             {
-                Console.WriteLine("У вас нет достаточных привилегий для выполнения этой операции.");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\nУ вас нет достаточных привилегий для выполнения этой операции.");
                 Console.ReadKey();
                 Environment.Exit(1);
                 return null;
@@ -63,6 +65,7 @@ namespace FileCrypt
 
                 if (ValueSalt == null)
                 {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
                     Console.WriteLine("\nСоль не была найдена.\nРекомендуется произвести команду GENERATE, для создания ключа и соли\n" +
                         "Если вы уверены что вы уже генерировали ключ и соль, проверьте файл конфигурации.\n" +
                         "Если в файле конфигурации отсутствует соль, вставьте ранее сгенерированную соль в поле Salt");
@@ -74,7 +77,8 @@ namespace FileCrypt
             }
             catch (PrivilegeNotHeldException)
             {
-                Console.WriteLine("У вас нет достаточных привилегий для выполнения этой операции.");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\nУ вас нет достаточных привилегий для выполнения этой операции.");
                 Console.ReadKey();
                 Environment.Exit(1);
                 return null;
