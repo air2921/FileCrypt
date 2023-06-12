@@ -90,6 +90,8 @@ namespace FileCrypt
             FileInfo fileInfo = new FileInfo(filePath);
 
 #pragma warning disable CA1416 // Проверка совместимости платформы
+            try
+            {
             FileSecurity fileSecurity = new FileSecurity(filePath, AccessControlSections.All);
 
             SecurityIdentifier adminSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
@@ -97,9 +99,16 @@ namespace FileCrypt
             FileSystemAccessRule adminAccessRule = new FileSystemAccessRule(adminSid, FileSystemRights.FullControl, AccessControlType.Allow);
 
             fileSecurity.AddAccessRule(adminAccessRule);
-#pragma warning disable CA1416 // Проверка совместимости платформы
 
             fileInfo.SetAccessControl(fileSecurity);
+        }
+            catch (FileNotFoundException)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\nФайл конфигурации не был найден.\nРекомендуется произвести команду GENERATE, для создания файла конфигурации");
+                Environment.Exit(1);
+            }
+#pragma warning disable CA1416 // Проверка совместимости платформы
         }
 
         private static string GetConfigurationFilePath()
