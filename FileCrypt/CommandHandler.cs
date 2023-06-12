@@ -9,6 +9,24 @@
         readonly IDirectoryOperations directoryOperations = new DirectoryAndFileOperations();
         readonly FileManager fileManager = new FileManager();
 
+        private byte[]? _key;
+        private byte[] Key
+        {
+            get
+            {
+                return _key = getValue.GetKeyValueFromConfigurationFile();
+            }
+        }
+
+        private byte[]? _salt;
+        private byte[] Salt
+        {
+            get
+            {
+                return _salt = getValue.GetSaltValueFromConfigurationFile();
+            }
+        }
+
         public void Help()
         {
             var HelpedCommands =
@@ -34,10 +52,10 @@
 
             var FileName = fileManager.CheckFile(FilePath);
 
-            byte[] EncryptKey = getValue.GetKeyValueFromConfigurationFile();
-            byte[] EncryptSalt = getValue.GetSaltValueFromConfigurationFile();
+            byte[] key = Key;
+            byte[] salt = Salt;
 
-            encrypt.EncryptFile(FileName, EncryptKey, EncryptSalt);
+            encrypt.EncryptFile(FileName, key, salt);
             Console.ReadKey();
         }
 
@@ -49,10 +67,10 @@
 
             var FileName = fileManager.CheckFile(FilePath);
 
-            byte[] DecryptKey = getValue.GetKeyValueFromConfigurationFile();
-            byte[] DecryptSalt = getValue.GetSaltValueFromConfigurationFile();
+            byte[] key = Key;
+            byte[] salt = Salt;
 
-            decrypt.DecryptFile(FileName, DecryptKey, DecryptSalt);
+            decrypt.DecryptFile(FileName, key, salt);
             Console.ReadKey();
         }
 
@@ -63,17 +81,18 @@
             string DirectoryPath = Console.ReadLine();
 
             var directoryName = fileManager.CheckDirectory(DirectoryPath);
-            string[] fileNames = Directory.GetFiles(directoryName);
+            string[] fileNames = Directory.GetFiles(directoryName, "*", SearchOption.AllDirectories);
 
-            byte[] encryptDirectoryKey = getValue.GetKeyValueFromConfigurationFile();
-            byte[] encryptDirectorySalt = getValue.GetSaltValueFromConfigurationFile();
+            byte[] key = Key;
+            byte[] salt = Salt;
+
             bool anyFileEncrypted = false;
             foreach (string fileName in fileNames)
             {
                 try
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    encrypt.EncryptFile(fileName, encryptDirectoryKey, encryptDirectorySalt);
+                    encrypt.EncryptFile(fileName, key, salt);
                     anyFileEncrypted = true;
                 }
                 catch (Exception ex)
@@ -103,7 +122,10 @@
             string DirectoryPath = Console.ReadLine();
 
             var directoryName = fileManager.CheckDirectory(DirectoryPath);
-            string[] fileNames = Directory.GetFiles(directoryName);
+            string[] fileNames = Directory.GetFiles(directoryName, "*", SearchOption.AllDirectories);
+
+            byte[] key = Key;
+            byte[] salt = Salt;
 
             byte[] decryptDirectoryKey = getValue.GetKeyValueFromConfigurationFile();
             byte[] decryptDirectorySalt = getValue.GetSaltValueFromConfigurationFile();
@@ -113,7 +135,7 @@
                 try
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    decrypt.DecryptFile(fileName, decryptDirectoryKey, decryptDirectorySalt);
+                    decrypt.DecryptFile(fileName, key, salt);
                     anyFileDecrypted = true;
                 }
                 catch (Exception ex)
