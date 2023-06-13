@@ -153,6 +153,7 @@
                 saveValues.SaveValuesToConfigurationFile();
                 Console.ForegroundColor= ConsoleColor.Green;
                 Console.WriteLine("\nЗначения установлены и могут быть использованы.");
+                Console.ReadKey();
             }
             else if (Check == "STOP")
             {
@@ -162,6 +163,7 @@
             {
                 Console.ForegroundColor= ConsoleColor.Red;
                 Console.WriteLine("\nТакой команды не предоставляется");
+                Console.ReadKey();
                 return;
             }
         }

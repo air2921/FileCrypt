@@ -17,14 +17,17 @@ namespace FileCrypt
                 process.WaitForExit();
 
                 Console.WriteLine($"Директория {directoryPath} успешно удалена.");
+                Console.ReadKey();
             }
             catch (UnauthorizedAccessException)
             {
                 Console.WriteLine($"Ошибка удаления директории {directoryPath}: отсутствуют необходимые разрешения доступа.");
+                Console.ReadKey();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Непредвиденная ошибка при попытке удаления директории {ex.Message}");
+                Console.ReadKey();
             }
         }
         public void CreateBackup(string sourceDirectory, string backupDirectory)
@@ -49,11 +52,13 @@ namespace FileCrypt
                     CreateBackup(directory, destPath);
                 }
                 Console.WriteLine("Резервная копия была создана успешно");
+                Console.ReadKey();
             }
             catch (Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Ошибка при создании резервной копии директории: '{sourceDirectory}'\n\n{ex.Message}");
+                Console.ReadKey();
             }
         }
 

@@ -39,6 +39,7 @@
             else
             {
                 Console.WriteLine($"\nДиректории по такому пути не существует     '{directoryPath}'");
+                Console.ReadKey();
                 Environment.Exit(1);
                 return null;
             }

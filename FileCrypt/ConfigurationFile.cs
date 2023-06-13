@@ -38,8 +38,8 @@ namespace FileCrypt
                     Console.WriteLine("\nКлюч не был найден." +
                         "\nЕсли вы уверены что вы уже генерировали ключ и соль, проверьте файл конфигурации." +
                         "\nЕсли в файле конфигурации отсутствует ключ, вставьте ранее сгенерированный ключ в поле Key");
-                    Environment.Exit(1);
                     Console.ReadKey();
+                    Environment.Exit(1);
                 }
 
                 byte[] KeyBytes = Convert.FromBase64String(ValueKey);
@@ -70,8 +70,8 @@ namespace FileCrypt
                     Console.WriteLine("\nСоль не была найдена." +
                         "\nЕсли вы уверены что вы уже генерировали ключ и соль, проверьте файл конфигурации." +
                         "\nЕсли в файле конфигурации отсутствует соль, вставьте ранее сгенерированную соль в поле Salt");
-                    Environment.Exit(1);
                     Console.ReadKey();
+                    Environment.Exit(1);
                 }
 
                 byte[] SaltBytes = Convert.FromBase64String(ValueSalt);
@@ -109,6 +109,7 @@ namespace FileCrypt
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("\nФайл конфигурации не был найден.\nРекомендуется произвести команду GENERATE, для создания файла конфигурации");
+                Console.ReadKey();
                 Environment.Exit(1);
             }
 #pragma warning disable CA1416 // Проверка совместимости платформы
