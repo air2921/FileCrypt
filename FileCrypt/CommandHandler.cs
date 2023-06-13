@@ -75,8 +75,8 @@ namespace FileCrypt
         {
             Console.WriteLine("Укажите путь к файлу который вы хотите зашифровать :");
 
-            var input = Console.ReadLine();
-            PathTo = input;
+            var FilePath = Console.ReadLine();
+            PathTo = FilePath;
 
             var FileName = fileManager.CheckFile(PathTo);
 
@@ -91,8 +91,8 @@ namespace FileCrypt
         {
             Console.WriteLine("Укажите путь к файлу который вы хотите расшифровать :");
 
-            var input = Console.ReadLine();
-            PathTo = input;
+            var FilePath = Console.ReadLine();
+            PathTo = FilePath;
 
             var FileName = fileManager.CheckFile(PathTo);
 
@@ -107,8 +107,8 @@ namespace FileCrypt
         {
             Console.WriteLine("Укажите путь к директории в которой нужно зашифровать все файлы :");
 
-            var input = Console.ReadLine();
-            PathTo = input;
+            var DirectoryPath = Console.ReadLine();
+            PathTo = DirectoryPath;
 
             var directoryName = fileManager.CheckDirectory(PathTo);
             string[] fileNames = Directory.GetFiles(directoryName, "*", SearchOption.AllDirectories);
@@ -141,8 +141,8 @@ namespace FileCrypt
         {
             Console.WriteLine("Укажите путь к директории в которой нужно расшифровать все файлы :");
 
-            var input = Console.ReadLine();
-            PathTo = input;
+            var DirectoryPath = Console.ReadLine();
+            PathTo = DirectoryPath;
 
             var directoryName = fileManager.CheckDirectory(PathTo);
             string[] fileNames = Directory.GetFiles(directoryName, "*", SearchOption.AllDirectories);
@@ -224,7 +224,8 @@ namespace FileCrypt
         {
             Console.WriteLine("Введите путь к директории которую требуется насильно удалить");
             var directoryPath = Console.ReadLine();
-            var directoryName = fileManager.CheckDirectory(directoryPath);
+            PathTo = directoryPath;
+            var directoryName = fileManager.CheckDirectory(PathTo);
             directoryOperations.DeleteDirectory(directoryName);
             Console.ReadKey();
         }
