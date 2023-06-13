@@ -4,6 +4,7 @@
     {
         static void Main(string[] args)
         {
+            Console.Title = $"FileCrypt ({Environment.UserName})";
             ICommands command = new CommandHandler();
 
             Console.WriteLine("Введите команду которую хотите выполнить");
