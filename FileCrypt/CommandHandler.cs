@@ -8,6 +8,7 @@
         readonly IGetValueFromConfigurationFile getValue = new ConfigurationFile();
         readonly IDirectoryOperations directoryOperations = new DirectoryAndFileOperations();
         readonly FileManager fileManager = new FileManager();
+        readonly OperationResultMessage message = new OperationResultMessage();
 
         private byte[]? _key;
         private byte[] Key
@@ -104,26 +105,7 @@
                     Console.ResetColor();
                 }
             }
-
-            if (allFiles == totalFiles && totalFiles > 0)
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("\nВсе файлы в директории были успешно зашифрованы.");
-                Console.ResetColor();
-            }
-            else if (allFiles == 0 && totalFiles == 0)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("\nВ директории не найдено файлов для шифрования или произошла ошибка при шифровании.");
-                Console.ResetColor();
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("\nНе все файлы из директории удалось зашифровать");
-                Console.ResetColor();
-            }
-            Console.ReadKey();
+            message.ResultMessage(allFiles, totalFiles);
         }
 
         public void DecryptDirectory()
@@ -156,26 +138,7 @@
                     Console.ResetColor();
                 }
             }
-
-            if (allFiles == totalFiles && totalFiles > 0)
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("\nВсе файлы в директории были успешно расшифрованы.");
-                Console.ResetColor();
-            }
-            else if (allFiles == 0 && totalFiles == 0)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("\nВ директории не найдено файлов для расшифровки или произошла ошибка при расшифровке.");
-                Console.ResetColor();
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("\nНе все файлы из директории удалось расшифровать");
-                Console.ResetColor();
-            }
-            Console.ReadKey();
+            message.ResultMessage(allFiles, totalFiles);
         }
 
         public void Generate()
