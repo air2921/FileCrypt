@@ -1,4 +1,6 @@
-﻿namespace FileCrypt
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FileCrypt
 {
     internal class CommandHandler : ICommands
     {
@@ -11,6 +13,10 @@
         readonly OperationResultMessage message = new OperationResultMessage();
 
         private byte[]? _key;
+        private string? _pathTo;
+        private byte[]? _salt;
+
+
         private byte[] Key
         {
             get
@@ -19,7 +25,6 @@
             }
         }
 
-        private byte[]? _salt;
         private byte[] Salt
         {
             get
@@ -27,6 +32,27 @@
                 return _salt = getValue.GetSaltValueFromConfigurationFile();
             }
         }
+
+        public string PathTo
+        {
+            get
+            {
+                return _pathTo;
+            }
+            set
+            {
+                if (value.Contains("FileCrypt"))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("\nЭтот путь недоступен");
+                    Console.ReadKey();
+                    Environment.Exit(1);
+                }
+
+                _pathTo = value;
+            }
+        }
+
 
         public void Help()
         {
@@ -49,9 +75,10 @@
         {
             Console.WriteLine("Укажите путь к файлу который вы хотите зашифровать :");
 
-            string FilePath = Console.ReadLine();
+            var input = Console.ReadLine();
+            PathTo = input;
 
-            var FileName = fileManager.CheckFile(FilePath);
+            var FileName = fileManager.CheckFile(PathTo);
 
             byte[] key = Key;
             byte[] salt = Salt;
@@ -64,9 +91,10 @@
         {
             Console.WriteLine("Укажите путь к файлу который вы хотите расшифровать :");
 
-            string FilePath = Console.ReadLine();
+            var input = Console.ReadLine();
+            PathTo = input;
 
-            var FileName = fileManager.CheckFile(FilePath);
+            var FileName = fileManager.CheckFile(PathTo);
 
             byte[] key = Key;
             byte[] salt = Salt;
@@ -79,9 +107,10 @@
         {
             Console.WriteLine("Укажите путь к директории в которой нужно зашифровать все файлы :");
 
-            string DirectoryPath = Console.ReadLine();
+            var input = Console.ReadLine();
+            PathTo = input;
 
-            var directoryName = fileManager.CheckDirectory(DirectoryPath);
+            var directoryName = fileManager.CheckDirectory(PathTo);
             string[] fileNames = Directory.GetFiles(directoryName, "*", SearchOption.AllDirectories);
             var totalFiles = fileNames.Length;
             var allFiles = 0;
@@ -112,9 +141,10 @@
         {
             Console.WriteLine("Укажите путь к директории в которой нужно расшифровать все файлы :");
 
-            string DirectoryPath = Console.ReadLine();
+            var input = Console.ReadLine();
+            PathTo = input;
 
-            var directoryName = fileManager.CheckDirectory(DirectoryPath);
+            var directoryName = fileManager.CheckDirectory(PathTo);
             string[] fileNames = Directory.GetFiles(directoryName, "*", SearchOption.AllDirectories);
             var totalFiles = fileNames.Length;
             var allFiles = 0;
