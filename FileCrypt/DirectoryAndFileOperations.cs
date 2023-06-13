@@ -9,12 +9,13 @@ namespace FileCrypt
             try
             {
                 Process process = new Process();
-                process.StartInfo.FileName = "cmd.exe";
-                process.StartInfo.Arguments = $"/c rd /s /q \"{directoryPath}\"";
-                process.StartInfo.CreateNoWindow = false;
+                process.StartInfo.FileName = "powershell.exe";
+                process.StartInfo.Arguments = $"-Command \"Remove-Item -Recurse -Force -LiteralPath '{directoryPath}'\"";
+                process.StartInfo.CreateNoWindow = true;
                 process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
                 process.Start();
                 process.WaitForExit();
+
                 Console.WriteLine($"Директория {directoryPath} успешно удалена.");
             }
             catch (UnauthorizedAccessException)
@@ -51,9 +52,9 @@ namespace FileCrypt
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Ошибка при создании резервной копии директории: {ex.Message}");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Ошибка при создании резервной копии директории: '{sourceDirectory}'\n\n{ex.Message}");
             }
-            //var backupDirectory = $"C:/{sourceDirectory}(Reserve)";
         }
 
         private static void CreateDirectory(string backupDirectory)
