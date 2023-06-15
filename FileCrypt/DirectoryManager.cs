@@ -2,7 +2,7 @@
 
 namespace FileCrypt
 {
-    internal class DirectoryAndFileOperations : IDirectoryOperations
+    internal class DirectoryManager : IDirectoryManager
     {
         public void DeleteDirectory(string directoryPath)
         {
@@ -16,22 +16,19 @@ namespace FileCrypt
                 process.Start();
                 process.WaitForExit();
 
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"Директория {directoryPath} успешно удалена.");
-                Console.ReadKey();
-            }
-            catch (UnauthorizedAccessException)
-            {
-                Console.WriteLine($"Ошибка удаления директории {directoryPath}: отсутствуют необходимые разрешения доступа.");
-                Console.ReadKey();
             }
             catch (Exception ex)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Непредвиденная ошибка при попытке удаления директории {ex.Message}");
-                Console.ReadKey();
             }
         }
         public void CreateBackup(string sourceDirectory, string backupDirectory)
         {
+            FileManager manager = new FileManager();
+
             CreateDirectory(backupDirectory);
 
             try
@@ -51,28 +48,40 @@ namespace FileCrypt
                     string destPath = Path.Combine(backupDirectory, directoryName);
                     CreateBackup(directory, destPath);
                 }
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Резервная копия была создана успешно");
-                Console.ReadKey();
             }
             catch (Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Ошибка при создании резервной копии директории: '{sourceDirectory}'\n\n{ex.Message}");
-                Console.ReadKey();
             }
         }
 
-        private static void CreateDirectory(string backupDirectory)
+        public void CreateDirectory(string directory)
         {
-            if (!Directory.Exists(backupDirectory))
+            if (!Directory.Exists(directory))
             {
-                Directory.CreateDirectory(backupDirectory);
+                Directory.CreateDirectory(directory);
+            }
+        }
+
+        public string CheckDirectory(string directoryPath)
+        {
+            if (Directory.Exists(directoryPath))
+            {
+                return directoryPath;
+            }
+            else
+            {
+                throw new DirectoryNotFoundException();
             }
         }
     }
-    public interface IDirectoryOperations
+    public interface IDirectoryManager
     {
         void CreateBackup(string sourceDirectory, string backupDirectory);
         void DeleteDirectory(string directoryPath);
+        string CheckDirectory(string directoryPath);
     }
 }
