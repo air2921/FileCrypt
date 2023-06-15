@@ -29,18 +29,6 @@ namespace FileCrypt
             }
         }
 
-        private byte[] Salt
-        {
-            get
-            {
-                if(_salt == null)
-                {
-                    return _salt = getValue.GetSaltValueFromConfigurationFile();
-                }
-                return _salt;
-            }
-        }
-
         private string PathTo
         {
             get
@@ -65,7 +53,7 @@ namespace FileCrypt
         public void Help()
         {
             var HelpedCommands =
-            "\nGENERATE           Команда используется для создания Ключа и Соли шифрования\n\n" +
+            "\nGENERATE           Команда используется для создания ключа шифрования\n\n" +
             "FENC               Команда используется для начала процесса шифрования отдельного файла\n\n" +
             "FDEC               Команда используется для начала процесса расшифровывания отдельного файла\n\n" +
             "DIRENC             Команда используется для начала процесса шифрования всех файлов в указанной директории\n\n" +
@@ -91,9 +79,8 @@ namespace FileCrypt
                 var FileName = fileManager.CheckFile(PathTo);
 
                 byte[] key = Key;
-                byte[] salt = Salt;
 
-                encrypt.EncryptFile(FileName, key, salt);
+                encrypt.EncryptFile(FileName, key);
             }
             catch (FileNotFoundException)
             {
@@ -115,9 +102,8 @@ namespace FileCrypt
                 var FileName = fileManager.CheckFile(PathTo);
 
                 byte[] key = Key;
-                byte[] salt = Salt;
 
-                decrypt.DecryptFile(FileName, key, salt);
+                decrypt.DecryptFile(FileName, key);
             }
             catch (FileNotFoundException)
             {
@@ -142,14 +128,13 @@ namespace FileCrypt
                 var allFiles = 0;
 
                 byte[] key = Key;
-                byte[] salt = Salt;
 
                 foreach (string fileName in fileNames)
                 {
                     try
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        encrypt.EncryptFile(fileName, key, salt);
+                        encrypt.EncryptFile(fileName, key);
                         allFiles++;
 
                         GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
@@ -186,14 +171,13 @@ namespace FileCrypt
                 var allFiles = 0;
 
                 byte[] key = Key;
-                byte[] salt = Salt;
 
                 foreach (string fileName in fileNames)
                 {
                     try
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        decrypt.DecryptFile(fileName, key, salt);
+                        decrypt.DecryptFile(fileName, key);
                         allFiles++;
 
                         GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
@@ -226,7 +210,7 @@ namespace FileCrypt
             {
                 saveValues.SaveValuesToConfigurationFile();
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("\nЗначения установлены и могут быть использованы.");
+                Console.WriteLine("\nЗначение установлено и может быть использовано.");
             }
             else if (Check == "STOP")
             {
