@@ -1,8 +1,8 @@
 ﻿namespace FileCrypt
 {
-    internal class FileSystemManager
+    internal class FileManager
     {
-        internal string GetFileExtension(string filePath)
+        internal string CheckFile(string filePath)
         {
             string fullPath = Path.GetFullPath(filePath);
             string fileName = Path.GetFileNameWithoutExtension(fullPath);
@@ -17,18 +17,31 @@
                     filePath = matchingFiles[0];
                 }
             }
-            return filePath;
-        }
 
-        public string CheckFile(string filePath)
-        {
             if (File.Exists(filePath))
             {
                 return filePath;
             }
             else
             {
-                throw new FileNotFoundException();
+                Console.WriteLine($"\nФайла по такому пути не существует     '{filePath}'");
+                Environment.Exit(1);
+                return null;
+            }
+        }
+
+        internal string CheckDirectory (string directoryPath)
+        {
+            if (Directory.Exists(directoryPath))
+            {
+                return directoryPath;
+            }
+            else
+            {
+                Console.WriteLine($"\nДиректории по такому пути не существует     '{directoryPath}'");
+                Console.ReadKey();
+                Environment.Exit(1);
+                return null;
             }
         }
     }
