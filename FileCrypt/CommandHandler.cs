@@ -197,7 +197,7 @@ namespace FileCrypt
                         allFiles++;
 
                         GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
-                        GC.Collect()
+                        GC.Collect();
                     }
                     catch (Exception ex)
                     {
