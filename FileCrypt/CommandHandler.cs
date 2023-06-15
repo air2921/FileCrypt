@@ -1,6 +1,4 @@
-﻿using System.Runtime;
-
-namespace FileCrypt
+﻿namespace FileCrypt
 {
     internal class CommandHandler : ICommands
     {
@@ -14,8 +12,6 @@ namespace FileCrypt
 
         private byte[]? _key;
         private string? _pathTo;
-        private byte[]? _salt;
-
 
         private byte[] Key
         {
@@ -75,17 +71,16 @@ namespace FileCrypt
             try
             {
                 PathTo = FilePath;
-
-                var FileName = fileManager.CheckFile(PathTo);
-
                 byte[] key = Key;
+                var FullNameFile = fileManager.GetFileExtension(PathTo);
 
-                encrypt.EncryptFile(FileName, key);
+                Console.ForegroundColor = ConsoleColor.Green;
+                encrypt.EncryptFile(FullNameFile, key);
             }
             catch (FileNotFoundException)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Директории по такому пути не существует: '{PathTo}'");
+                Console.WriteLine($"Файла по такому пути не существует: '{PathTo}'");
                 return;
             }
         }
@@ -98,17 +93,16 @@ namespace FileCrypt
             try
             {
                 PathTo = FilePath;
-
-                var FileName = fileManager.CheckFile(PathTo);
-
                 byte[] key = Key;
+                var FullNameFile = fileManager.GetFileExtension(PathTo);
 
-                decrypt.DecryptFile(FileName, key);
+                Console.ForegroundColor = ConsoleColor.Green;
+                decrypt.DecryptFile(FullNameFile, key);
             }
             catch (FileNotFoundException)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Директории по такому пути не существует: '{PathTo}'");
+                Console.WriteLine($"Файла по такому пути не существует: '{PathTo}'");
                 return;
             }
         }
@@ -121,7 +115,6 @@ namespace FileCrypt
             try
             {
                 PathTo = DirectoryPath;
-                directoryManager.CheckDirectory(PathTo);
 
                 string[] fileNames = Directory.GetFiles(PathTo, "*", SearchOption.AllDirectories);
                 var totalFiles = fileNames.Length;
@@ -136,9 +129,6 @@ namespace FileCrypt
                         Console.ForegroundColor = ConsoleColor.Green;
                         encrypt.EncryptFile(fileName, key);
                         allFiles++;
-
-                        GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
-                        GC.Collect();
                     }
                     catch (Exception ex)
                     {
@@ -164,7 +154,6 @@ namespace FileCrypt
             try
             {
                 PathTo = DirectoryPath;
-                directoryManager.CheckDirectory(PathTo);
 
                 string[] fileNames = Directory.GetFiles(PathTo, "*", SearchOption.AllDirectories);
                 var totalFiles = fileNames.Length;
@@ -179,9 +168,6 @@ namespace FileCrypt
                         Console.ForegroundColor = ConsoleColor.Green;
                         decrypt.DecryptFile(fileName, key);
                         allFiles++;
-
-                        GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
-                        GC.Collect();
                     }
                     catch (Exception ex)
                     {
@@ -240,16 +226,14 @@ namespace FileCrypt
             var sourceDirectory = Console.ReadLine();
             try
             {
-                directoryManager.CheckDirectory(sourceDirectory);
-
                 var directoryName = new DirectoryInfo(sourceDirectory).Name;
                 var directoryBackupName = $"C:/directory backups/{directoryName}(Reserve)";
                 directoryManager.CreateBackup(sourceDirectory, directoryBackupName);
             }
-            catch (DirectoryNotFoundException)
+            catch (DirectoryNotFoundException ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"\nДиректории по такому пути не существует     '{sourceDirectory}'");
+                Console.WriteLine($"\nОшибка при создании резервной копии директории\n{ex.Message}");
                 return;
             }
         }
@@ -261,7 +245,6 @@ namespace FileCrypt
             try
             {
                 PathTo = directoryPath;
-                directoryManager.CheckDirectory(PathTo);
 
                 directoryManager.DeleteDirectory(PathTo);
             }
