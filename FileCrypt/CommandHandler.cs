@@ -1,4 +1,6 @@
-﻿namespace FileCrypt
+﻿using System.Runtime;
+
+namespace FileCrypt
 {
     internal class CommandHandler : ICommands
     {
@@ -19,7 +21,11 @@
         {
             get
             {
-                return _key = getValue.GetKeyValueFromConfigurationFile();
+                if(_key == null)
+                {
+                    return _key = getValue.GetKeyValueFromConfigurationFile();
+                }
+                return _key;
             }
         }
 
@@ -27,7 +33,11 @@
         {
             get
             {
-                return _salt = getValue.GetSaltValueFromConfigurationFile();
+                if(_salt == null)
+                {
+                    return _salt = getValue.GetSaltValueFromConfigurationFile();
+                }
+                return _salt;
             }
         }
 
@@ -141,6 +151,9 @@
                         Console.ForegroundColor = ConsoleColor.Green;
                         encrypt.EncryptFile(fileName, key, salt);
                         allFiles++;
+
+                        GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+                        GC.Collect();
                     }
                     catch (Exception ex)
                     {
@@ -182,6 +195,9 @@
                         Console.ForegroundColor = ConsoleColor.Green;
                         decrypt.DecryptFile(fileName, key, salt);
                         allFiles++;
+
+                        GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+                        GC.Collect()
                     }
                     catch (Exception ex)
                     {
