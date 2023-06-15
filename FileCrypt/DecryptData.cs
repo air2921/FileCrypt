@@ -1,54 +1,44 @@
-﻿using System.Runtime;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 
 namespace FileCrypt
 {
     internal class DecryptData : IDecryptor
     {
-
-        private static byte[] Decrypt(string filePath, byte[] key, byte[] salt)
+        private static void Decrypt(Stream source, Stream target, byte[] key)
         {
-            byte[] encryptedData = File.ReadAllBytes(filePath);
-
             using (Aes aes = Aes.Create())
             {
-                using (Rfc2898DeriveBytes rfc2898 = new Rfc2898DeriveBytes(key, salt, 10000))
+                byte[] iv = new byte[aes.IV.Length];
+                source.Read(iv, 0, iv.Length);
+                aes.IV = iv;
+                using (Rfc2898DeriveBytes rfc2898 = new Rfc2898DeriveBytes(key, iv, 10000))
                 {
                     aes.Key = rfc2898.GetBytes(aes.KeySize / 8);
                 }
 
-                byte[] iv = new byte[aes.IV.Length];
-                Buffer.BlockCopy(encryptedData, salt.Length, iv, 0, iv.Length);
-                aes.IV = iv;
-
-                using (MemoryStream encryptedMemoryStream = new MemoryStream(encryptedData, salt.Length + iv.Length, encryptedData.Length - salt.Length - iv.Length))
-                using (MemoryStream decryptedMemoryStream = new MemoryStream())
+                using (CryptoStream cryptoStream = new CryptoStream(source, aes.CreateDecryptor(), CryptoStreamMode.Read))
                 {
-                    using (CryptoStream cryptoStream = new CryptoStream(encryptedMemoryStream, aes.CreateDecryptor(), CryptoStreamMode.Read))
-                    {
-                        cryptoStream.CopyTo(decryptedMemoryStream);
-                    }
-
-                    byte[] decryptedData = decryptedMemoryStream.ToArray();
-                    return decryptedData;
+                    cryptoStream.CopyTo(target);
                 }
             }
         }
 
-        public void DecryptFile(string filePath, byte[] key, byte[] salt)
+        public void DecryptFile(string filePath, byte[] key)
         {
-            byte[] decryptedData = Decrypt(filePath, key, salt);
-            File.WriteAllBytes(filePath, decryptedData);
-            Console.WriteLine($"Файл {filePath} был успешно расшифрован.");
+            string tmp = $"{filePath}.tmp";
+            using (var source = File.OpenRead(filePath))
+            using (var target = File.Create(tmp))
+            {
+                Decrypt(source, target, key);
+            }
+            File.Move(tmp, filePath, true);
 
-            decryptedData = null;
-            GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
-            GC.Collect();
+            Console.WriteLine($"Файл {filePath} был успешно расшифрован.");
         }
     }
 
     public interface IDecryptor
     {
-        void DecryptFile(string filePath, byte[] key, byte[] salt);
+        void DecryptFile(string filePath, byte[] key);
     }
 }
