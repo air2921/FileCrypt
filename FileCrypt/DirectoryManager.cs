@@ -6,7 +6,7 @@ namespace FileCrypt
     {
         public void DeleteDirectory(string directoryPath)
         {
-            try
+            if (Directory.Exists(directoryPath))
             {
                 Process process = new Process();
                 process.StartInfo.FileName = "powershell.exe";
@@ -19,20 +19,17 @@ namespace FileCrypt
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"Директория {directoryPath} успешно удалена.");
             }
-            catch (Exception ex)
+            else
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Непредвиденная ошибка при попытке удаления директории {ex.Message}");
+                throw new DirectoryNotFoundException();
             }
         }
         public void CreateBackup(string sourceDirectory, string backupDirectory)
         {
-            FileManager manager = new FileManager();
-
-            CreateDirectory(backupDirectory);
-
-            try
+            if(!Directory.Exists(backupDirectory) && Directory.Exists(sourceDirectory))
             {
+                Directory.CreateDirectory(backupDirectory);
+
                 string[] files = Directory.GetFiles(sourceDirectory);
                 foreach (string file in files)
                 {
@@ -51,27 +48,6 @@ namespace FileCrypt
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Резервная копия была создана успешно");
             }
-            catch (Exception ex)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Ошибка при создании резервной копии директории: '{sourceDirectory}'\n\n{ex.Message}");
-            }
-        }
-
-        public void CreateDirectory(string directory)
-        {
-            if (!Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-        }
-
-        public string CheckDirectory(string directoryPath)
-        {
-            if (Directory.Exists(directoryPath))
-            {
-                return directoryPath;
-            }
             else
             {
                 throw new DirectoryNotFoundException();
@@ -82,6 +58,5 @@ namespace FileCrypt
     {
         void CreateBackup(string sourceDirectory, string backupDirectory);
         void DeleteDirectory(string directoryPath);
-        string CheckDirectory(string directoryPath);
     }
 }
