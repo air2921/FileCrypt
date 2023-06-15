@@ -8,17 +8,14 @@ namespace FileCrypt
     {
         public void SaveValuesToConfigurationFile()
         {
-            GenerateRandomKeySalt keySalt = new GenerateRandomKeySalt();
-            var Key = keySalt.GenerateRandomKey();
-            var Salt = keySalt.GenerateRandomSalt();
+            GenerateRandomKey key = new GenerateRandomKey();
+            var Key = key.GenerateKey();
 
             var encodedKey = Convert.ToBase64String(Key);
-            var encodedSalt = Convert.ToBase64String(Salt);
 
             Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
             config.AppSettings.Settings.Add("Key", encodedKey);
-            config.AppSettings.Settings.Add("Salt", encodedSalt);
 
             config.Save(ConfigurationSaveMode.Modified);
             ConfigurationManager.RefreshSection("appSettings");
@@ -45,38 +42,6 @@ namespace FileCrypt
                 byte[] KeyBytes = Convert.FromBase64String(ValueKey);
 
                 return KeyBytes;
-            }
-            catch (PrivilegeNotHeldException)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("\nУ вас нет достаточных привилегий для выполнения этой операции.");
-                Console.ReadKey();
-                Environment.Exit(1);
-                return null;
-            }
-        }
-
-        public byte[] GetSaltValueFromConfigurationFile()
-        {
-            try
-            {
-                SetAdminOnlyAccess(GetConfigurationFilePath());
-
-                var ValueSalt = ConfigurationManager.AppSettings["Salt"];
-
-                if (String.IsNullOrWhiteSpace(ValueSalt))
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\nСоль не была найдена." +
-                        "\nЕсли вы уверены что вы уже генерировали ключ и соль, проверьте файл конфигурации." +
-                        "\nЕсли в файле конфигурации отсутствует соль, вставьте ранее сгенерированную соль в поле Salt");
-                    Console.ReadKey();
-                    Environment.Exit(1);
-                }
-
-                byte[] SaltBytes = Convert.FromBase64String(ValueSalt);
-
-                return SaltBytes;
             }
             catch (PrivilegeNotHeldException)
             {
@@ -131,6 +96,5 @@ namespace FileCrypt
     public interface IGetValueFromConfigurationFile
     {
         byte[] GetKeyValueFromConfigurationFile();
-        byte[] GetSaltValueFromConfigurationFile();
     }
 }
