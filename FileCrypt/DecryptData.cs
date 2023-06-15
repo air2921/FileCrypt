@@ -1,12 +1,15 @@
-﻿using System.Security.Cryptography;
+﻿using System.Runtime;
+using System.Security.Cryptography;
 
 namespace FileCrypt
 {
     internal class DecryptData : IDecryptor
     {
 
-        private static byte[] Decrypt(byte[] encryptedData, byte[] key, byte[] salt)
+        private static byte[] Decrypt(string filePath, byte[] key, byte[] salt)
         {
+            byte[] encryptedData = File.ReadAllBytes(filePath);
+
             using (Aes aes = Aes.Create())
             {
                 using (Rfc2898DeriveBytes rfc2898 = new Rfc2898DeriveBytes(key, salt, 10000))
@@ -18,15 +21,15 @@ namespace FileCrypt
                 Buffer.BlockCopy(encryptedData, salt.Length, iv, 0, iv.Length);
                 aes.IV = iv;
 
-                using (MemoryStream encryptedStream = new MemoryStream(encryptedData, salt.Length + iv.Length, encryptedData.Length - salt.Length - iv.Length))
-                using (MemoryStream decryptedStream = new MemoryStream())
+                using (MemoryStream encryptedMemoryStream = new MemoryStream(encryptedData, salt.Length + iv.Length, encryptedData.Length - salt.Length - iv.Length))
+                using (MemoryStream decryptedMemoryStream = new MemoryStream())
                 {
-                    using (CryptoStream cryptoStream = new CryptoStream(encryptedStream, aes.CreateDecryptor(), CryptoStreamMode.Read))
+                    using (CryptoStream cryptoStream = new CryptoStream(encryptedMemoryStream, aes.CreateDecryptor(), CryptoStreamMode.Read))
                     {
-                        cryptoStream.CopyTo(decryptedStream);
+                        cryptoStream.CopyTo(decryptedMemoryStream);
                     }
 
-                    byte[] decryptedData = decryptedStream.ToArray();
+                    byte[] decryptedData = decryptedMemoryStream.ToArray();
                     return decryptedData;
                 }
             }
@@ -34,17 +37,13 @@ namespace FileCrypt
 
         public void DecryptFile(string filePath, byte[] key, byte[] salt)
         {
-            byte[] encryptedData = File.ReadAllBytes(filePath);
-            byte[] decryptedData = Decrypt(encryptedData, key, salt);
-
-            using (MemoryStream decryptedStream = new MemoryStream(decryptedData))
-            {
-                using (FileStream fs = new FileStream(filePath, FileMode.Create))
-                {
-                    decryptedStream.CopyTo(fs);
-                }
-            }
+            byte[] decryptedData = Decrypt(filePath, key, salt);
+            File.WriteAllBytes(filePath, decryptedData);
             Console.WriteLine($"Файл {filePath} был успешно расшифрован.");
+
+            decryptedData = null;
+            GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+            GC.Collect();
         }
     }
 

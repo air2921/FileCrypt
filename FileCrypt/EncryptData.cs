@@ -1,11 +1,12 @@
-﻿using System.Security.Cryptography;
+﻿using System.Runtime;
+using System.Security.Cryptography;
 
 namespace FileCrypt
 {
     internal class EncryptData : IEncryptor
     {
 
-        private static byte[] Encrypt(byte[] fileData, byte[] key, byte[] salt)
+        private static void Encrypt(string filePath, byte[] fileData, byte[] key, byte[] salt)
         {
             using (Aes aes = Aes.Create())
             {
@@ -17,33 +18,34 @@ namespace FileCrypt
                 aes.GenerateIV();
                 byte[] iv = aes.IV;
 
-                using (MemoryStream encryptedStream = new MemoryStream())
+                using (FileStream encryptedFileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    encryptedStream.Write(salt, 0, salt.Length);
-                    encryptedStream.Write(iv, 0, iv.Length);
+                    encryptedFileStream.Write(salt, 0, salt.Length);
+                    encryptedFileStream.Write(iv, 0, iv.Length);
 
-                    using (CryptoStream cryptoStream = new CryptoStream(encryptedStream, aes.CreateEncryptor(), CryptoStreamMode.Write))
+                    using (MemoryStream encryptedMemoryStream = new MemoryStream())
                     {
-                        cryptoStream.Write(fileData, 0, fileData.Length);
-                        cryptoStream.FlushFinalBlock();
+                        using (CryptoStream cryptoStream = new CryptoStream(encryptedMemoryStream, aes.CreateEncryptor(), CryptoStreamMode.Write))
+                        {
+                            cryptoStream.Write(fileData, 0, fileData.Length);
+                            cryptoStream.FlushFinalBlock();
+                            encryptedMemoryStream.Seek(0, SeekOrigin.Begin);
+                            encryptedMemoryStream.CopyTo(encryptedFileStream);
+                        }
                     }
-
-                    byte[] encryptedData = encryptedStream.ToArray();
-                    return encryptedData;
                 }
             }
         }
 
         public void EncryptFile(string filePath, byte[] key, byte[] salt)
         {
-            byte[] imageData = File.ReadAllBytes(filePath);
-            byte[] encryptedData = Encrypt(imageData, key, salt);
-
-            using (FileStream encryptedFileStream = new FileStream(filePath, FileMode.Create))
-            {
-                encryptedFileStream.Write(encryptedData, 0, encryptedData.Length);
-            }
+            byte[] data = File.ReadAllBytes(filePath);
+            Encrypt(filePath, data, key, salt);
             Console.WriteLine($"Файл {filePath} был успешно зашифрован.");
+
+            data = null;
+            GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+            GC.Collect();
         }
     }
 
