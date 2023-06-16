@@ -12,7 +12,7 @@ namespace FileCrypt
             aes.IV = iv;
             using (Rfc2898DeriveBytes rfc2898 = new(key, iv, 1000, HashAlgorithmName.SHA256))
             {
-                aes.Key = rfc2898.GetBytes(aes.KeySize / 8);
+                aes.Key = rfc2898.GetBytes(aes.KeySize);
             }
 
             using CryptoStream cryptoStream = new(source, aes.CreateDecryptor(), CryptoStreamMode.Read);

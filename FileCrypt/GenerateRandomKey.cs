@@ -8,7 +8,7 @@ namespace FileCrypt
         {
             using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
             {
-                byte[] key = new byte[256];
+                byte[] key = new byte[32];
                 rng.GetBytes(key);
                 return key;
             }
