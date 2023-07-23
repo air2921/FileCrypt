@@ -7,7 +7,7 @@
             Console.Title = $"FileCrypt ({Environment.UserName})";
             ICommands command = new CommandHandler();
 
-            Console.WriteLine("Введите команду которую хотите выполнить");
+            Console.WriteLine("Enter the command you want to run");
             string InputUser = Console.ReadLine();
             while (InputUser != "EXIT")
             {
@@ -51,14 +51,14 @@
                         break;
                     default:
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("\nТакой команды не существует.\nВы можете ввести '.help' для получения справочной информации.");
+                        Console.WriteLine("\nSuch command does not exist, type '.help' for information on valid commands.");
                         Console.ResetColor();
                         break;
 
                 }
 
                 Console.ResetColor();
-                Console.WriteLine("\n\nВведите следующую команду:");
+                Console.WriteLine("\n\nEnter your next command:");
                 InputUser = Console.ReadLine();
             }    
         }

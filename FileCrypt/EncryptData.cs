@@ -28,7 +28,7 @@ namespace FileCrypt
             }
             File.Move(tmp, filePath, true);
 
-            Console.WriteLine($"Файл {filePath} был успешно зашифрован.");
+            Console.WriteLine($"File {filePath} was successfully encrypted.");
         }
     }
 

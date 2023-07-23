@@ -29,7 +29,7 @@ namespace FileCrypt
             }
             File.Move(tmp, filePath, true);
 
-            Console.WriteLine($"Файл {filePath} был успешно расшифрован.");
+            Console.WriteLine($"The file {filePath} was successfully decrypted.");
         }
     }
 

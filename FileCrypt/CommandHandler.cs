@@ -32,7 +32,7 @@
                 if (value.Contains("FileCrypt"))
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("\nЭтот путь недоступен");
+                    Console.WriteLine("\nThis file path is not available");
                     Console.ReadKey();
                     Environment.Exit(1);
                 }
@@ -45,23 +45,23 @@
         public void Help()
         {
             var HelpedCommands =
-            "\nGENERATE           Команда используется для создания ключа шифрования\n\n" +
-            "FENC               Команда используется для начала процесса шифрования отдельного файла\n\n" +
-            "FDEC               Команда используется для начала процесса расшифровывания отдельного файла\n\n" +
-            "DIRENC             Команда используется для начала процесса шифрования всех файлов в указанной директории\n\n" +
-            "DIRDEC             Команда используется для начала процесса расшифровывания всех файлов в указанной директории\n\n" +
-            "DIRBACKUP          Команда используется для создания резервной копии выбранной директории\n\n" +
-            "DIRDEL             Команда используется для принудительного удаления директории\n\n" +
-            "EX                 Команда для получения примера правильного ввода пути\n\n" +
-            "EXIT               Команда используется для выхода из приложения" +
-            "\n\n\n\nВсе резервные копии директорий сохраняются по пути 'C:\\directory backups\\Ваша папка(Reserve)'";
+            "\nGENERATE           The command is used to create an encryption key\n\n" +
+            "FENC               The command is used to start the process of encrypting a single file\n\n" +
+            "FDEC               The command is used to start the process of decrypting a single file\n\n" +
+            "DIRENC             The command is used to start the process of encrypting all files in the specified directory\n\n" +
+            "DIRDEC             The command is used to start the process of decrypting all files in the specified directory\n\n" +
+            "DIRBACKUP          The command is used to create a backup copy of the selected directory\n\n" +
+            "DIRDEL             The command is used to force the removal of a directory\n\n" +
+            "EX                 Command to get an example of a valid path input\n\n" +
+            "EXIT               The command is used to exit the application" +
+            "\n\n\n\nAll directory backups are stored in the path 'C:\\directory backups\\Your folder(Reserve)'";
 
             Console.WriteLine(HelpedCommands);
         }
 
         public void EncryptFile()
         {
-            Console.WriteLine("Укажите путь к файлу который вы хотите зашифровать :");
+            Console.WriteLine("Specify the path to the file you want to encrypt :");
 
             var FilePath = Console.ReadLine();
             try
@@ -76,14 +76,14 @@
             catch (FileNotFoundException)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Файла по такому пути не существует: '{PathTo}'");
+                Console.WriteLine($"The file does not exist at this path: '{PathTo}'");
                 return;
             }
         }
 
         public void DecryptFile()
         {
-            Console.WriteLine("Укажите путь к файлу который вы хотите расшифровать :");
+            Console.WriteLine("Specify the path to the file you want to decrypt :");
 
             var FilePath = Console.ReadLine();
             try
@@ -98,14 +98,14 @@
             catch (FileNotFoundException)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Файла по такому пути не существует: '{PathTo}'");
+                Console.WriteLine($"The file does not exist at this path: '{PathTo}'");
                 return;
             }
         }
 
         public void EncryptDirectory()
         {
-            Console.WriteLine("Укажите путь к директории в которой нужно зашифровать все файлы :");
+            Console.WriteLine("Specify the path to the directory in which you want to encrypt all files :");
 
             var DirectoryPath = Console.ReadLine();
             try
@@ -129,7 +129,7 @@
                     catch (Exception ex)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"Ошибка при шифровании файла {fileName}: {ex.Message}");
+                        Console.WriteLine($"File encryption error {fileName}: {ex.Message}");
                     }
                 }
                 message.ResultMessage(allFiles, totalFiles);
@@ -137,14 +137,14 @@
             catch (DirectoryNotFoundException)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"\nДиректории по такому пути не существует     '{PathTo}'");
+                Console.WriteLine($"\nThere is no directory for this path     '{PathTo}'");
                 return;
             }
         }
 
         public void DecryptDirectory()
         {
-            Console.WriteLine("Укажите путь к директории в которой нужно расшифровать все файлы :");
+            Console.WriteLine("Specify the path to the directory in which you want to decrypt all files :");
 
             var DirectoryPath = Console.ReadLine();
             try
@@ -168,7 +168,7 @@
                     catch (Exception ex)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"Ошибка при расшифровке файла {fileName}: {ex.Message}");
+                        Console.WriteLine($"File decrypting error {fileName}: {ex.Message}");
                     }
                 }
                 message.ResultMessage(allFiles, totalFiles);
@@ -176,23 +176,23 @@
             catch (DirectoryNotFoundException)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"\nДиректории по такому пути не существует     '{PathTo}'");
+                Console.WriteLine($"\nThere is no directory for this path     '{PathTo}'");
                 return;
             }
         }
 
         public void Generate()
         {
-            Console.WriteLine("\nЕсли вы уже выполняли команду GENERATE, повторное выполнение команды может привести к нежелательным последствиям" +
-            "\nВведите 'OK' если вы еще не создавали ключ шифрования." +
-            "\nВведите 'STOP' если вы уже создавали ключ шифрования.");
+            Console.WriteLine("\nIf you have already issued the GENERATE command, re-executing the command may lead to undesirable consequences" +
+            "\nEnter 'OK' if you have not yet created an encryption key." +
+            "\nEnter 'STOP' if you have already created an encryption key.");
 
             var Check = Console.ReadLine();
             if (Check == "OK")
             {
                 saveValues.SaveValuesToConfigurationFile();
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("\nЗначение установлено и может быть использовано.");
+                Console.WriteLine("\nThe value is set and can be used.");
             }
             else if (Check == "STOP")
             {
@@ -201,7 +201,7 @@
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("\nТакой команды не предоставляется");
+                Console.WriteLine("\nThis command is invalid");
                 return;
             }
         }
@@ -209,16 +209,16 @@
         public void Example()
         {
             Console.WriteLine(
-                "\nПример пути к папке с изображениями          C:/Users/Имя пользователя/Pictures/Название вашей папки с изображениями\n\n" +
-                "Пример пути к папке с документами            C:/Users/Имя пользователя/Documents/Название папки с документами\n\n" +
-                "Пример пути к папке с видео                  C:/Users/Имя пользователя/Videos/Название вашей папки с видео\n\n" +
-                "Пример пути к папке находящейся диске        C:/Название вашей папки/Название папки в папке [(При наличии)]\n\n" +
-                "Пример пути к файлу                          С/Название вашей папки/Название файла [(Расширение файла указывать не нужно)]");
+                "\nПример пути к папке с изображениями          C:/Users/Username/Pictures/Name of your pictures folder\n\n" +
+                "Пример пути к папке с документами            C:/Users/Username/Documents/Documents folder name\n\n" +
+                "Пример пути к папке с видео                  C:/Users/Username/Videos/Name of your video folder\n\n" +
+                "Пример пути к папке находящейся диске        C:/Your folder name/Folder name in folder (If available)\n\n" +
+                "Пример пути к файлу                          C:/Your folder name/File name (File extension is not required)");
         }
 
         public void CreateBackupDirectory()
         {
-            Console.WriteLine("Укажите путь к директории для которой нужно создать резервную копию:");
+            Console.WriteLine("Specify the path to the directory for which you want to create a backup:");
             var sourceDirectory = Console.ReadLine();
             try
             {
@@ -229,14 +229,14 @@
             catch (DirectoryNotFoundException ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"\nОшибка при создании резервной копии директории\n{ex.Message}");
+                Console.WriteLine($"\nError while creating directory backup\n{ex.Message}");
                 return;
             }
         }
 
         public void DeleteDirectory()
         {
-            Console.WriteLine("Введите путь к директории которую требуется насильно удалить");
+            Console.WriteLine("Enter the path to the directory that you want to forcibly remove");
             var directoryPath = Console.ReadLine();
             try
             {
@@ -247,7 +247,7 @@
             catch (DirectoryNotFoundException)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"\nДиректории по такому пути не существует     '{PathTo}'");
+                Console.WriteLine($"\nThere is no directory for this path.     '{PathTo}'");
                 return;
             }
         }

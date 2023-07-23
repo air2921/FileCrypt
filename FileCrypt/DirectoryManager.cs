@@ -17,7 +17,7 @@ namespace FileCrypt
                 process.WaitForExit();
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"Директория {directoryPath} успешно удалена.");
+                Console.WriteLine($"The {directoryPath} directory was deleted successfully.");
             }
             else
             {
@@ -46,7 +46,7 @@ namespace FileCrypt
                     CreateBackup(directory, destPath);
                 }
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Резервная копия была создана успешно");
+                Console.WriteLine("The backup was created successfully");
             }
             else
             {
