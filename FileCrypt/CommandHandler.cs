@@ -209,11 +209,11 @@
         public void Example()
         {
             Console.WriteLine(
-                "\nПример пути к папке с изображениями          C:/Users/Username/Pictures/Name of your pictures folder\n\n" +
-                "Пример пути к папке с документами            C:/Users/Username/Documents/Documents folder name\n\n" +
-                "Пример пути к папке с видео                  C:/Users/Username/Videos/Name of your video folder\n\n" +
-                "Пример пути к папке находящейся диске        C:/Your folder name/Folder name in folder (If available)\n\n" +
-                "Пример пути к файлу                          C:/Your folder name/File name (File extension is not required)");
+                "\nExample path to images directory             C:/Users/Username/Pictures/Name of your pictures folder\n\n" +
+                "Example path to documents directory          C:/Users/Username/Documents/Documents folder name\n\n" +
+                "Example path to video directory              C:/Users/Username/Videos/Name of your video folder\n\n" +
+                "Example path to directory on a disk          C:/Your folder name/Folder name in folder (If available)\n\n" +
+                "Example file path                            C:/Your folder name/File name (File extension is not required)");
         }
 
         public void CreateBackupDirectory()
