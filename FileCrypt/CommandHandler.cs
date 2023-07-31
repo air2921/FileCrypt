@@ -34,7 +34,7 @@
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("\nThis file path is not available");
                     Console.ReadKey();
-                    Environment.Exit(1);
+                    Environment.Exit(5);
                 }
 
                 _pathTo = value;

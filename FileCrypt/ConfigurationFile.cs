@@ -36,7 +36,7 @@ namespace FileCrypt
                         "\nIf you are sure that you have already generated the key, check the configuration file." +
                         "\nIf there is no key in the configuration file, paste the previously generated key in the 'Key' field");
                     Console.ReadKey();
-                    Environment.Exit(1);
+                    Environment.Exit(0);
                 }
 
                 byte[] KeyBytes = Convert.FromBase64String(ValueKey);
@@ -48,7 +48,7 @@ namespace FileCrypt
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("\nYou do not have sufficient privileges to perform this operation.");
                 Console.ReadKey();
-                Environment.Exit(1);
+                Environment.Exit(5);
                 return null;
             }
         }
@@ -75,7 +75,7 @@ namespace FileCrypt
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("\nConfiguration file was not found.\nIt is recommended to issue the GENERATE command to create a configuration file");
                 Console.ReadKey();
-                Environment.Exit(1);
+                Environment.Exit(2);
             }
 #pragma warning disable CA1416 // Проверка совместимости платформы
         }
