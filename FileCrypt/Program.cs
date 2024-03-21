@@ -37,14 +37,6 @@
                         command.DecryptDirectory();
 
                         break;
-                    case "DIRDEL":
-                        command.DeleteDirectory();
-
-                        break;
-                    case "DIRBACKUP":
-                        command.CreateBackupDirectory();
-
-                        break;
                     case "EX":
                         command.Example();
 

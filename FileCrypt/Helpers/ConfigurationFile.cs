@@ -2,9 +2,9 @@
 using System.Security.AccessControl;
 using System.Security.Principal;
 
-namespace FileCrypt
+namespace FileCrypt.Helpers
 {
-    internal class ConfigurationFile : ISaveValuesToConfigurationFile, IGetValueFromConfigurationFile
+    internal class ConfigurationFile : IConfiguration
     {
         public void SaveValuesToConfigurationFile()
         {
@@ -29,7 +29,7 @@ namespace FileCrypt
 
                 var ValueKey = ConfigurationManager.AppSettings["Key"];
 
-                if (String.IsNullOrWhiteSpace(ValueKey))
+                if (string.IsNullOrWhiteSpace(ValueKey))
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("\nThe key was not found." +
@@ -88,13 +88,9 @@ namespace FileCrypt
         }
     }
 
-    public interface ISaveValuesToConfigurationFile
+    public interface IConfiguration
     {
         void SaveValuesToConfigurationFile();
-    }
-
-    public interface IGetValueFromConfigurationFile
-    {
         byte[] GetKeyValueFromConfigurationFile();
     }
 }
