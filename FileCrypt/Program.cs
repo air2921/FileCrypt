@@ -1,17 +1,23 @@
-﻿namespace FileCrypt
+﻿using FileCrypt.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace FileCrypt
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Console.Title = $"FileCrypt ({Environment.UserName})";
-            ICommands command = new CommandHandler();
+            var services = new ServiceCollection();
+            DependencyContainer.Transient(services);
+
+            var command = services.BuildServiceProvider().GetRequiredService<ICommands>();
 
             Console.WriteLine("Enter the command you want to run");
-            string InputUser = Console.ReadLine();
-            while (InputUser != "EXIT")
+            string inputCommand = Console.ReadLine();
+            while (inputCommand != "EXIT")
             {
-                switch (InputUser)
+                switch (inputCommand)
                 {
                     case ".help":
                         command.Help();
@@ -37,14 +43,6 @@
                         command.DecryptDirectory();
 
                         break;
-                    case "DIRDEL":
-                        command.DeleteDirectory();
-
-                        break;
-                    case "DIRBACKUP":
-                        command.CreateBackupDirectory();
-
-                        break;
                     case "EX":
                         command.Example();
 
@@ -59,7 +57,7 @@
 
                 Console.ResetColor();
                 Console.WriteLine("\n\nEnter your next command:");
-                InputUser = Console.ReadLine();
+                inputCommand = Console.ReadLine();
             }    
         }
     }

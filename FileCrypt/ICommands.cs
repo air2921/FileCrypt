@@ -9,7 +9,5 @@
         void Example();
         void EncryptDirectory();
         void DecryptDirectory();
-        void CreateBackupDirectory();
-        void DeleteDirectory();
     }
 }
