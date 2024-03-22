@@ -1,25 +1,16 @@
 ﻿using FileCrypt.Cryptography;
 using FileCrypt.Helpers;
 using Microsoft.Extensions.DependencyInjection;
+using System.Configuration;
 
 namespace FileCrypt
 {
-    internal class CommandHandler : ICommands
+    internal class CommandHandler(
+        [FromKeyedServices("encrypt")] ICypher encrypt,
+        [FromKeyedServices("decrypt")] ICypher decrypt,
+        IConfiguration configuration,
+        IOperationResultMessage message) : ICommands
     {
-        private readonly ICypher _encrypt;
-        private readonly ICypher _decrypt;
-        private readonly IConfiguration _configuration;
-
-        public CommandHandler(
-            [FromKeyedServices("encrypt")] ICypher encrypt,
-            [FromKeyedServices("decrypt")] ICypher decrypt,
-            IConfiguration configuration)
-        {
-            _encrypt = encrypt;
-            _decrypt = decrypt;
-            _configuration = configuration;
-        }
-
         private string _path;
         private byte[] _key;
 
@@ -28,7 +19,7 @@ namespace FileCrypt
         {
             get
             {
-                return _key ??= _configuration.GetKeyValueFromConfigurationFile();
+                return _key ??= configuration.GetKeyValueFromConfigurationFile();
             }
         }
 
@@ -60,7 +51,7 @@ namespace FileCrypt
                 var Path = Console.ReadLine();
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                _encrypt.CypherFileAsync(Path, Key);
+                encrypt.CypherFileAsync(Path, Key);
             }
             catch (FileNotFoundException)
             {
@@ -78,7 +69,7 @@ namespace FileCrypt
             try
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                _decrypt.CypherFileAsync(Path, Key);
+                decrypt.CypherFileAsync(Path, Key);
             }
             catch (FileNotFoundException)
             {
@@ -103,7 +94,7 @@ namespace FileCrypt
                     try
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        _encrypt.CypherFileAsync(fileName, Key);
+                        encrypt.CypherFileAsync(fileName, Key);
                         allFiles++;
                     }
                     catch (Exception ex)
@@ -137,7 +128,7 @@ namespace FileCrypt
                     try
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        _decrypt.CypherFileAsync(fileName, Key);
+                        decrypt.CypherFileAsync(fileName, Key);
                         allFiles++;
                     }
                     catch (Exception ex)
@@ -174,7 +165,7 @@ namespace FileCrypt
                 if (Check == "STOP")
                     return;
 
-                _configuration.SaveValuesToConfigurationFile();
+                configuration.SaveValuesToConfigurationFile();
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("\nThe value is set and can be used.");
             }

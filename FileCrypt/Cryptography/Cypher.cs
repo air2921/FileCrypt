@@ -4,26 +4,26 @@ namespace FileCrypt.Cryptography
 {
     internal interface ICypher
     {
-        public Task<bool> CypherFileAsync(string filePath, byte[] key, CancellationToken cancellationToken = default);
+        public Task<bool> CypherFileAsync(string filePath, byte[] key);
     }
 
     public class Encrypt : ICypher
     {
-        private async Task EncryptionAsync(Stream src, Stream target, byte[] key, CancellationToken cancellationToken = default)
+        private async Task EncryptionAsync(Stream src, Stream target, byte[] key)
         {
             try
             {
                 using var aes = Aes.Create();
 
                 byte[] iv = aes.IV;
-                await target.WriteAsync(iv, cancellationToken);
+                await target.WriteAsync(iv);
                 using (Rfc2898DeriveBytes rfc2898 = new(key, iv, 1000, HashAlgorithmName.SHA256))
                 {
                     aes.Key = rfc2898.GetBytes(aes.KeySize / 8);
                 }
 
                 using CryptoStream cryptoStream = new(target, aes.CreateEncryptor(), CryptoStreamMode.Write);
-                await src.CopyToAsync(cryptoStream, cancellationToken);
+                await src.CopyToAsync(cryptoStream);
             }
             catch (Exception)
             {
@@ -31,7 +31,7 @@ namespace FileCrypt.Cryptography
             }
         }
 
-        public async Task<bool> CypherFileAsync(string filePath, byte[] key, CancellationToken cancellationToken = default)
+        public async Task<bool> CypherFileAsync(string filePath, byte[] key)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace FileCrypt.Cryptography
                 using (var source = File.OpenRead(filePath))
                 using (var target = File.Create(tmp))
                 {
-                    await EncryptionAsync(source, target, key, cancellationToken);
+                    await EncryptionAsync(source, target, key);
                 }
                 File.Move(tmp, filePath, true);
 
@@ -55,14 +55,14 @@ namespace FileCrypt.Cryptography
 
     public class Decrypt : ICypher
     {
-        private async Task DecryptionAsync(Stream source, Stream target, byte[] key, CancellationToken cancellationToken)
+        private async Task DecryptionAsync(Stream source, Stream target, byte[] key)
         {
             try
             {
                 using var aes = Aes.Create();
 
                 byte[] iv = new byte[aes.BlockSize / 8];
-                await source.ReadAsync(iv, cancellationToken);
+                await source.ReadAsync(iv);
                 aes.IV = iv;
                 using (Rfc2898DeriveBytes rfc2898 = new(key, iv, 1000, HashAlgorithmName.SHA256))
                 {
@@ -70,7 +70,7 @@ namespace FileCrypt.Cryptography
                 }
 
                 using CryptoStream cryptoStream = new(source, aes.CreateDecryptor(), CryptoStreamMode.Read);
-                await cryptoStream.CopyToAsync(target, cancellationToken);
+                await cryptoStream.CopyToAsync(target);
             }
             catch (Exception)
             {
@@ -78,7 +78,7 @@ namespace FileCrypt.Cryptography
             }
         }
 
-        public async Task<bool> CypherFileAsync(string filePath, byte[] key, CancellationToken cancellationToken)
+        public async Task<bool> CypherFileAsync(string filePath, byte[] key)
         {
             try
             {
@@ -86,7 +86,7 @@ namespace FileCrypt.Cryptography
                 using (var source = File.OpenRead(filePath))
                 using (var target = File.Create(tmp))
                 {
-                    await DecryptionAsync(source, target, key, cancellationToken);
+                    await DecryptionAsync(source, target, key);
                 }
                 File.Move(tmp, filePath, true);
 

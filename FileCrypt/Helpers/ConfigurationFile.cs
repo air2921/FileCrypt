@@ -4,12 +4,11 @@ using System.Security.Principal;
 
 namespace FileCrypt.Helpers
 {
-    internal class ConfigurationFile : IConfiguration
+    internal class ConfigurationFile(IGenerate generate) : IConfiguration
     {
         public void SaveValuesToConfigurationFile()
         {
-            GenerateRandomKey key = new GenerateRandomKey();
-            var Key = key.GenerateKey();
+            var Key = generate.GenerateKey();
 
             var encodedKey = Convert.ToBase64String(Key);
 

@@ -2,7 +2,7 @@
 
 namespace FileCrypt.Helpers
 {
-    internal class GenerateRandomKey
+    internal class Generate : IGenerate
     {
         public byte[] GenerateKey()
         {
@@ -11,5 +11,10 @@ namespace FileCrypt.Helpers
             rng.GetBytes(key);
             return key;
         }
+    }
+
+    internal interface IGenerate
+    {
+        public byte[] GenerateKey();
     }
 }
